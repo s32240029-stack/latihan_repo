@@ -10,14 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:ital,wght@0,400..700;1,400..700&display=swap">
 <script>
-  (function () {
-    var root = document.documentElement;
-    root.classList.add('js');
-    try {
-      var saved = localStorage.getItem('sw-theme');
-      if (saved === 'light' || saved === 'dark') root.setAttribute('data-theme', saved);
-    } catch (e) { /* storage unavailable: follow the system theme */ }
-  })();
+  document.documentElement.classList.add('js');
 </script>
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -49,10 +42,6 @@
     </nav>
 
     <div class="header-actions">
-      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Ganti tema terang atau gelap">
-        <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></svg>
-        <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.2A8.2 8.2 0 0 1 9.8 4a8.2 8.2 0 1 0 10.2 10.2z"/></svg>
-      </button>
       <a class="btn btn-primary btn-sm header-cta" href="#kontak" data-plan="Starter">Mulai Gratis</a>
       <button class="icon-btn nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Buka menu">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
@@ -118,6 +107,7 @@
       </div>
 
       <p class="scroll-hint" id="scroll-hint" aria-hidden="true">Gulir untuk mulai menenun</p>
+      <ol class="stage-dots" id="stage-dots" aria-hidden="true"><li class="is-on"></li><li></li><li></li><li></li></ol>
     </div>
   </section>
 
@@ -633,6 +623,7 @@
   </div>
 </footer>
 
+<script src="vendor/three.min.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

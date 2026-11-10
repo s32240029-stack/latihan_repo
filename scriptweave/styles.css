@@ -2,7 +2,8 @@
    Loom layout: the page opens on a pinned stage where one thread changes form as
    you scroll (yarn ball, warp, woven code, hemmed cloth). Below it, a left-aligned
    editorial column; woven bands mark the seams between major parts.
-   Palette comes from tenun dyes: undyed cotton, indigo, turmeric, madder. */
+   Palette comes from tenun dyes: undyed cotton, indigo, turmeric, madder.
+   The site commits to one cream world (like a product shoot on paper), so it has no dark theme. */
 
 :root {
   color-scheme: light;
@@ -54,46 +55,6 @@
   --r-sm: 8px;
   --r-lg: 16px;
   --header-h: 64px;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    color-scheme: dark;
-    --bg: #0b1130;          /* indigo vat */
-    --bg-raised: #101842;
-    --surface: #172152;
-    --line: #2a366f;
-    --fg: #f1ede3;
-    --muted: #aab2d9;
-    --turmeric: #f6b93b;
-    --turmeric-ink: #1b1403;
-    --accent-text: #f6b93b;
-    --madder: #ff7a5c;
-    --ok: #62d6a8;
-    --yarn: #8ea2ff;
-    --yarn-hi: #dfe5ff;
-    --yarn-lo: #3f4fb5;
-    --shadow: 0 24px 60px -24px rgba(0, 0, 0, .65);
-  }
-}
-
-:root[data-theme="dark"] {
-  color-scheme: dark;
-  --bg: #0b1130;
-  --bg-raised: #101842;
-  --surface: #172152;
-  --line: #2a366f;
-  --fg: #f1ede3;
-  --muted: #aab2d9;
-  --turmeric: #f6b93b;
-  --turmeric-ink: #1b1403;
-  --accent-text: #f6b93b;
-  --madder: #ff7a5c;
-  --ok: #62d6a8;
-  --yarn: #8ea2ff;
-  --yarn-hi: #dfe5ff;
-  --yarn-lo: #3f4fb5;
-  --shadow: 0 24px 60px -24px rgba(0, 0, 0, .65);
 }
 
 /* ---------- base ---------- */
@@ -254,14 +215,6 @@ code { font-family: var(--font-mono); font-size: .88em; }
   stroke-linejoin: round;
 }
 
-/* the toggle shows the theme you would switch to */
-.i-sun { display: none; }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .i-sun { display: block; }
-  :root:not([data-theme="light"]) .i-moon { display: none; }
-}
-:root[data-theme="dark"] .i-sun { display: block; }
-:root[data-theme="dark"] .i-moon { display: none; }
 
 /* ---------- header ---------- */
 
@@ -522,6 +475,26 @@ h1 {
   .is-live .chapter h2 { font-size: clamp(2rem, min(1.2rem + 4.6vw, 13vh), 5.25rem); }
   .is-live .ch-num { font-size: 1.4rem; }
 }
+
+.stage-dots { display: none; }
+.is-live .stage-dots {
+  display: grid;
+  gap: 10px;
+  position: absolute;
+  left: max(14px, env(safe-area-inset-left, 0px));
+  top: 50%;
+  z-index: 5;
+  transform: translateY(-50%);
+}
+.stage-dots li {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--line);
+  transition: background-color .3s ease, transform .3s ease;
+}
+.stage-dots li.is-on { background: var(--fg); transform: scale(1.35); }
+@media (max-width: 899px) { .is-live .stage-dots { display: none; } }
 
 /* ---------- compat band ---------- */
 
