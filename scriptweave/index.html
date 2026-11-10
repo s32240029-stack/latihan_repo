@@ -281,6 +281,99 @@
         </article>
       </div>
 
+      <div class="agent reveal" id="mode-agen">
+        <div class="agent-head">
+          <p class="feature-tag">Mode Agen</p>
+          <h3 class="agent-title">Banyak penenun, satu kain.</h3>
+          <p>Untuk pekerjaan yang lebih besar dari satu fungsi, serahkan ke Mode Agen. Beberapa agen ScriptWeave membagi tugas, saling memeriksa, dan melapor ke kamu di setiap langkah.</p>
+        </div>
+
+        <div class="agent-body">
+          <div class="agent-demo">
+            <div class="agent-tabs" role="tablist" aria-label="Kemampuan Mode Agen">
+              <button type="button" role="tab" id="tab-alur" data-key="alur" aria-controls="panel-alur" aria-selected="true">Alur kerja</button>
+              <button type="button" role="tab" id="tab-kabar" data-key="kabar" aria-controls="panel-kabar" aria-selected="false">Kabar agen</button>
+              <button type="button" role="tab" id="tab-urai" data-key="urai" aria-controls="panel-urai" aria-selected="false">Urai ulang</button>
+              <button type="button" role="tab" id="tab-audit" data-key="audit" aria-controls="panel-audit" aria-selected="false">Jejak audit</button>
+            </div>
+
+            <div class="term" role="tabpanel" id="panel-alur" data-key="alur" aria-labelledby="tab-alur" tabindex="0">
+              <p class="term-bar"><span>login-otp</span><span>3 tahap, 4 agen, 01.12</span></p>
+              <span class="tl"><span class="dim">$</span> scriptweave agen "login OTP via WhatsApp"</span>
+              <span class="tl">&nbsp;</span>
+              <span class="tl"><span class="ok">✓</span> pemeta       <span class="dim">42 file dibaca</span>       4/4</span>
+              <span class="tl"><span class="ok">✓</span> penulis-api  <span class="dim">src/auth/otp.ts</span>      3/3</span>
+              <span class="tl"><span class="run">●</span> penulis-ui   <span class="dim">app/masuk/page.tsx</span>   2/3</span>
+              <span class="tl"><span class="dim">○ penguji      menunggu giliran     0/5</span></span>
+            </div>
+
+            <div class="term" role="tabpanel" id="panel-kabar" data-key="kabar" aria-labelledby="tab-kabar" tabindex="0">
+              <p class="term-bar"><span>login-otp</span><span>4 pesan</span></p>
+              <span class="tl"><span class="who">penulis-api</span> <span class="dim">→</span> <span class="run">kamu</span></span>
+              <span class="tl">  Kode OTP berlaku 5 atau 10 menit?</span>
+              <span class="tl"><span class="run">kamu</span> <span class="dim">→</span> <span class="who">penulis-api</span></span>
+              <span class="tl">  5 menit, maksimal 3 kali coba.</span>
+              <span class="tl"><span class="who">penguji</span> <span class="dim">→</span> <span class="who">penulis-api</span></span>
+              <span class="tl">  2 test gagal di otp.test.ts. Log terkirim.</span>
+              <span class="tl"><span class="who">penulis-api</span> <span class="dim">→</span> <span class="who">penguji</span></span>
+              <span class="tl">  Sudah diperbaiki, jalankan ulang.</span>
+            </div>
+
+            <div class="term" role="tabpanel" id="panel-urai" data-key="urai" aria-labelledby="tab-urai" tabindex="0">
+              <p class="term-bar"><span>login-otp</span><span>4 titik simpan</span></p>
+              <span class="tl"><span class="dim">$</span> scriptweave urai</span>
+              <span class="tl">  <span class="run">#4</span>  <span class="dim">14.32</span>  ubah skema tabel pesanan</span>
+              <span class="tl">  <span class="run">#3</span>  <span class="dim">14.27</span>  tambah validasi voucher</span>
+              <span class="tl">  <span class="run">#2</span>  <span class="dim">14.20</span>  refactor hitungDiskon()</span>
+              <span class="tl">  <span class="run">#1</span>  <span class="dim">14.05</span>  mulai sesi</span>
+              <span class="tl">&nbsp;</span>
+              <span class="tl"><span class="dim">$</span> scriptweave urai --ke 3</span>
+              <span class="tl"><span class="ok">✓</span> 6 file dikembalikan ke titik #3</span>
+            </div>
+
+            <div class="term" role="tabpanel" id="panel-audit" data-key="audit" aria-labelledby="tab-audit" tabindex="0">
+              <p class="term-bar"><span>login-otp</span><span>5 catatan terakhir</span></p>
+              <span class="tl"><span class="dim">14.20.03</span>  <span class="who">baca</span>      src/checkout/voucher.ts</span>
+              <span class="tl"><span class="dim">14.20.11</span>  <span class="who">ubah</span>      voucher.ts  <span class="ok">+12</span> <span class="del">−4</span></span>
+              <span class="tl"><span class="dim">14.21.40</span>  <span class="who">jalankan</span>  npm test  <span class="ok">✓ 38 lulus</span></span>
+              <span class="tl"><span class="dim">14.22.02</span>  <span class="run">izin</span>      git push</span>
+              <span class="tl"><span class="dim">14.22.09</span>  <span class="ok">disetujui</span> oleh kamu</span>
+            </div>
+          </div>
+
+          <div class="agent-notes">
+            <article class="note is-open" data-key="alur">
+              <h4><button type="button" class="note-head" aria-expanded="true" aria-controls="note-alur">Multi-agen sejak awal<span class="pm" aria-hidden="true"></span></button></h4>
+              <div class="note-body" id="note-alur">
+                <p>ScriptWeave memecah tugas besar menjadi beberapa tahap, lalu membagikannya ke agen pemeta, penulis, dan penguji. Mereka berjalan bersamaan dan saling memeriksa hasil satu sama lain.</p>
+                <p class="benefit"><span>Manfaat</span>Tugas besar selesai lebih cepat, dengan pemeriksaan berlapis.</p>
+              </div>
+            </article>
+            <article class="note" data-key="kabar">
+              <h4><button type="button" class="note-head" aria-expanded="false" aria-controls="note-kabar">Agen yang saling berkabar<span class="pm" aria-hidden="true"></span></button></h4>
+              <div class="note-body" id="note-kabar">
+                <p>Agen bertanya ke kamu saat butuh keputusan, dan saling berkirim pesan saat menemukan masalah. Semua percakapannya bisa kamu baca.</p>
+                <p class="benefit"><span>Manfaat</span>Tidak ada asumsi diam-diam, keputusan penting tetap di tanganmu.</p>
+              </div>
+            </article>
+            <article class="note" data-key="urai">
+              <h4><button type="button" class="note-head" aria-expanded="false" aria-controls="note-urai">Urai ulang kapan saja<span class="pm" aria-hidden="true"></span></button></h4>
+              <div class="note-body" id="note-urai">
+                <p>Setiap langkah agen tersimpan sebagai titik simpan. Kalau hasilnya melenceng, urai kembali ke titik mana pun dengan satu perintah.</p>
+                <p class="benefit"><span>Manfaat</span>Bebas bereksperimen karena setiap perubahan bisa dibatalkan.</p>
+              </div>
+            </article>
+            <article class="note" data-key="audit">
+              <h4><button type="button" class="note-head" aria-expanded="false" aria-controls="note-audit">Jejak audit lengkap<span class="pm" aria-hidden="true"></span></button></h4>
+              <div class="note-body" id="note-audit">
+                <p>Setiap file yang dibaca, perintah yang dijalankan, dan izin yang diminta tercatat berurutan. Perintah berisiko seperti push selalu menunggu persetujuanmu.</p>
+                <p class="benefit"><span>Manfaat</span>Tim tahu persis apa yang dikerjakan agen dan siapa yang menyetujuinya.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+
       <div class="steps reveal">
         <h3 class="steps-title">Mulai dalam tiga langkah</h3>
         <ol class="steps-list">
@@ -344,6 +437,7 @@
             <li>Weave Chat tanpa batas</li>
             <li>Weave Review untuk 100 pull request per bulan</li>
             <li>Weave Fix, Test, dan Docs</li>
+            <li>Mode Agen dengan 3 agen paralel</li>
             <li>Semua editor dan terminal</li>
             <li>Repo tanpa batas</li>
             <li>Dukungan email, dibalas maksimal 1 hari kerja</li>
@@ -359,6 +453,7 @@
           <ul class="ticks">
             <li>Semua fitur Pro</li>
             <li>Weave Review tanpa batas</li>
+            <li>Mode Agen dengan 10 agen paralel dan jejak audit untuk admin</li>
             <li>Aturan tim: satu standar kode untuk semua anggota</li>
             <li>Dasbor admin dan laporan pemakaian</li>
             <li>SSO dengan Google Workspace dan Microsoft</li>
@@ -395,6 +490,10 @@
         <details>
           <summary>Apa bedanya ScriptWeave dengan chatbot AI biasa?</summary>
           <p>Chatbot umum hanya tahu potongan kode yang kamu tempel. ScriptWeave mengindeks seluruh repo, jadi sarannya mengikuti struktur folder, fungsi yang sudah ada, dan gaya penulisan tim kamu. Semuanya terjadi di dalam editor, jadi kamu tidak perlu pindah jendela.</p>
+        </details>
+        <details>
+          <summary>Apa itu Mode Agen?</summary>
+          <p>Mode Agen dipakai untuk tugas yang lebih besar dari satu fungsi, misalnya menambah fitur baru. Beberapa agen membagi pekerjaan, saling memeriksa, dan mencatat semua langkahnya. Perintah berisiko selalu menunggu persetujuanmu, dan setiap perubahan bisa diurai ulang ke titik simpan sebelumnya. Mode Agen tersedia di paket Pro dan Team.</p>
         </details>
         <details>
           <summary>Apakah ScriptWeave mengerti bahasa Indonesia?</summary>

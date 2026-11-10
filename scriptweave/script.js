@@ -659,6 +659,49 @@
     });
   }
 
+  /* ---------- agent mode: tabs, terminal panels and notes move together ---------- */
+
+  var agentTabs = $$('.agent-tabs [role="tab"]');
+  var agentPanels = $$('.term[role="tabpanel"]');
+  var agentNotes = $$('.note');
+
+  function selectAgent(key, moveFocus) {
+    agentTabs.forEach(function (tab) {
+      var on = tab.getAttribute('data-key') === key;
+      tab.setAttribute('aria-selected', String(on));
+      tab.tabIndex = on ? 0 : -1;
+      if (on && moveFocus) tab.focus();
+      if (on && tab.scrollIntoView && tab.parentNode.scrollWidth > tab.parentNode.clientWidth) {
+        tab.parentNode.scrollLeft = tab.offsetLeft - 16;
+      }
+    });
+    agentPanels.forEach(function (panel) { panel.hidden = panel.getAttribute('data-key') !== key; });
+    agentNotes.forEach(function (note) {
+      var on = note.getAttribute('data-key') === key;
+      note.classList.toggle('is-open', on);
+      var head = $('.note-head', note);
+      if (head) head.setAttribute('aria-expanded', String(on));
+    });
+  }
+
+  if (agentTabs.length) {
+    agentTabs.forEach(function (tab, idx) {
+      tab.addEventListener('click', function () { selectAgent(tab.getAttribute('data-key'), false); });
+      tab.addEventListener('keydown', function (e) {
+        var step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+        if (!step) return;
+        e.preventDefault();
+        var next = agentTabs[(idx + step + agentTabs.length) % agentTabs.length];
+        selectAgent(next.getAttribute('data-key'), true);
+      });
+    });
+    agentNotes.forEach(function (note) {
+      var head = $('.note-head', note);
+      if (head) head.addEventListener('click', function () { selectAgent(note.getAttribute('data-key'), false); });
+    });
+    selectAgent(agentTabs[0].getAttribute('data-key'), false);
+  }
+
   /* ---------- pricing ---------- */
 
   var billButtons = $$('.bill-toggle button');
