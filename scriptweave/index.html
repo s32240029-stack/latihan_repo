@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ScriptWeave | Asisten Coding AI</title>
+<meta name="description" content="ScriptWeave adalah asisten coding AI yang memahami seluruh codebase kamu, lalu membantu menulis, me-review, dan memperbaiki kode langsung dari editor.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%230b1130'/%3E%3Cg fill='%23f6b93b'%3E%3Crect x='3' y='7' width='18' height='4' rx='2'/%3E%3Crect x='3' y='14' width='18' height='4' rx='2'/%3E%3C/g%3E%3Cg fill='%23eef0fb'%3E%3Crect x='7' y='3' width='4' height='18' rx='2'/%3E%3Crect x='14' y='3' width='4' height='18' rx='2'/%3E%3C/g%3E%3Cg fill='%23f6b93b'%3E%3Crect x='6' y='7' width='6' height='4'/%3E%3Crect x='13' y='14' width='6' height='4'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:ital,wght@0,400..700;1,400..700&display=swap">
+<script>
+  (function () {
+    var root = document.documentElement;
+    root.classList.add('js');
+    try {
+      var saved = localStorage.getItem('sw-theme');
+      if (saved === 'light' || saved === 'dark') root.setAttribute('data-theme', saved);
+    } catch (e) { /* storage unavailable: follow the system theme */ }
+  })();
+</script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<a class="skip" href="#beranda">Lompat ke konten</a>
+
+<header class="site-header" id="site-header">
+  <div class="wrap header-row">
+    <a class="brand" href="#beranda" aria-label="ScriptWeave, kembali ke beranda">
+      <svg class="mark" viewBox="0 0 24 24" aria-hidden="true">
+        <rect class="m-weft" x="2" y="6" width="20" height="4" rx="2"/>
+        <rect class="m-weft" x="2" y="14" width="20" height="4" rx="2"/>
+        <rect class="m-warp" x="6" y="2" width="4" height="20" rx="2"/>
+        <rect class="m-warp" x="14" y="2" width="4" height="20" rx="2"/>
+        <rect class="m-weft" x="5" y="6" width="6" height="4"/>
+        <rect class="m-weft" x="13" y="14" width="6" height="4"/>
+      </svg>
+      <span class="wordmark">Script<i>/</i>Weave</span>
+    </a>
+
+    <nav class="site-nav" id="site-nav" aria-label="Navigasi utama">
+      <a href="#beranda">Beranda</a>
+      <a href="#tentang">Tentang</a>
+      <a href="#fitur">Fitur</a>
+      <a href="#harga">Harga</a>
+      <a href="#faq">FAQ</a>
+      <a href="#kontak">Kontak</a>
+    </nav>
+
+    <div class="header-actions">
+      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Ganti tema terang atau gelap">
+        <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.2A8.2 8.2 0 0 1 9.8 4a8.2 8.2 0 1 0 10.2 10.2z"/></svg>
+      </button>
+      <a class="btn btn-primary btn-sm header-cta" href="#kontak" data-plan="Starter">Mulai Gratis</a>
+      <button class="icon-btn nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Buka menu">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- a. HOMEPAGE: a pinned stage. One thread runs through it and changes form as you scroll. -->
+  <section class="story" id="beranda">
+    <div class="stage" id="stage">
+
+      <div class="story-hero" id="story-hero">
+        <div class="wrap hero-wrap">
+          <p class="eyebrow">// asisten coding AI untuk developer Indonesia</p>
+          <h1 id="hero-title">
+            <span class="h1-line" id="hero-anchor">Tenun ide</span>
+            <span class="h1-line">jadi kode.</span>
+          </h1>
+          <div class="hero-foot">
+            <p class="lede">ScriptWeave membaca seluruh codebase kamu, lalu membantu menulis, me-review, dan memperbaiki kode sampai siap rilis, langsung dari editor.</p>
+            <div class="cta-row">
+              <a class="btn btn-primary btn-arrow" href="#kontak" data-plan="Starter">Mulai Gratis</a>
+              <a class="btn btn-ghost" href="#fitur">Lihat fitur</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <canvas class="loom-canvas" id="loom-canvas" aria-hidden="true"></canvas>
+
+      <div class="tags" id="tags" aria-hidden="true">
+        <span class="tag" data-tag="f0">src/checkout/</span>
+        <span class="tag tag-ink" data-tag="f1">pesanan.ts</span>
+        <span class="tag tag-ink" data-tag="f2">package.json</span>
+        <span class="tag" data-tag="f3">README.md</span>
+        <span class="tag tag-ok" data-tag="d0">Review lolos</span>
+        <span class="tag tag-ink" data-tag="d1">12 test hijau</span>
+        <span class="tag" data-tag="d2">Docs terbaru</span>
+      </div>
+
+      <div class="chapters" id="chapters">
+        <article class="chapter" data-chapter="1">
+          <p class="ch-num">1.</p>
+          <h2>Urai konteks</h2>
+          <p>ScriptWeave membaca struktur repo, fungsi, dan dependensi kamu. Setiap file menjadi benang lungsin yang menopang semua saran berikutnya.</p>
+          <a class="btn btn-primary btn-arrow btn-sm" href="#tentang">Kenali ScriptWeave</a>
+        </article>
+        <article class="chapter" data-chapter="2">
+          <p class="ch-num">2.</p>
+          <h2>Tenun saran</h2>
+          <p>Tulis niatmu sebagai komentar atau prompt. ScriptWeave menenunnya dengan konteks tadi menjadi kode multi-baris yang mengikuti gaya repo kamu.</p>
+          <a class="btn btn-primary btn-arrow btn-sm" href="#fitur">Lihat semua fitur</a>
+        </article>
+        <article class="chapter" data-chapter="3">
+          <p class="ch-num">3.</p>
+          <h2>Rapikan sebelum rilis</h2>
+          <p>Weave Review memeriksa bug dan celah keamanan, Weave Test menulis unit test, Weave Docs memperbarui dokumentasi. Kamu tinggal menyetujui diff-nya.</p>
+          <a class="btn btn-primary btn-arrow btn-sm" href="#kontak" data-plan="Starter">Mulai gratis</a>
+        </article>
+      </div>
+
+      <p class="scroll-hint" id="scroll-hint" aria-hidden="true">Gulir untuk mulai menenun</p>
+    </div>
+  </section>
+
+  <section class="compat-band" aria-label="Editor dan bahasa yang didukung">
+    <div class="wrap compat">
+      <p class="compat-label">Jalan di editor yang sudah kamu pakai</p>
+      <ul class="compat-list">
+        <li>VS Code</li>
+        <li>JetBrains IDE</li>
+        <li>Neovim</li>
+        <li>Terminal</li>
+      </ul>
+      <ul class="compat-list compat-langs" aria-label="Bahasa pemrograman yang didukung">
+        <li>TypeScript</li><li>Python</li><li>Go</li><li>Java</li><li>Kotlin</li><li>PHP</li><li>Dart</li><li>Rust</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="seam" aria-hidden="true"></div>
+
+  <!-- b. ABOUT US / ABOUT THE PRODUCT -->
+  <section class="section" id="tentang">
+    <div class="wrap">
+      <div class="split">
+        <div class="split-head reveal">
+          <p class="eyebrow">// tentang</p>
+          <h2>Kami percaya kode yang baik ditenun rapi sejak baris pertama.</h2>
+        </div>
+        <div class="split-body reveal">
+          <p>ScriptWeave lahir di Jakarta dari tim kecil engineer yang capek mengulang pekerjaan yang sama: menulis boilerplate, mencari fungsi di repo yang asing, dan menunggu review berhari-hari. Kami membuat asisten yang kami sendiri ingin pakai setiap hari.</p>
+          <p>Nama kami datang dari dua kata. <em>Script</em> adalah kode yang kamu tulis. <em>Weave</em> berarti menenun. Seperti penenun yang menyatukan benang lungsin dan pakan menjadi selembar kain, ScriptWeave menyatukan tiga hal menjadi kode yang rapi.</p>
+        </div>
+      </div>
+
+      <div class="loom reveal">
+        <ul class="loom-threads">
+          <li class="th-turmeric"><span class="th-label"><strong>Niat kamu</strong><small>prompt, komentar, atau pertanyaan</small></span></li>
+          <li class="th-madder"><span class="th-label"><strong>Konteks codebase</strong><small>struktur repo, fungsi, dan dependensi</small></span></li>
+          <li class="th-sky"><span class="th-label"><strong>Standar tim</strong><small>gaya penulisan dan aturan review</small></span></li>
+        </ul>
+        <div class="loom-reed" aria-hidden="true"></div>
+        <div class="loom-cloth">
+          <strong>Kode siap review</strong>
+          <small>rapi, teruji, dan konsisten dengan repo kamu</small>
+        </div>
+      </div>
+
+      <div class="principles">
+        <article class="principle reveal">
+          <h3>Konteks dulu, baru kode</h3>
+          <p>ScriptWeave membaca struktur repo, konvensi penamaan, dan dependensi sebelum menyarankan apa pun. Hasilnya terasa seperti ditulis rekan satu tim.</p>
+        </article>
+        <article class="principle reveal">
+          <h3>Kamu tetap pegang kemudi</h3>
+          <p>Setiap perubahan muncul sebagai diff yang bisa kamu terima, ubah, atau tolak. Tidak ada kode yang masuk tanpa persetujuanmu.</p>
+        </article>
+        <article class="principle reveal">
+          <h3>Kode kamu milik kamu</h3>
+          <p>Kode dienkripsi saat dikirim maupun disimpan, dan tidak pernah dipakai untuk melatih model.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- c. FEATURES / PRODUCT INFORMATION -->
+  <section class="section section-alt" id="fitur">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">// fitur</p>
+        <h2>Enam cara ScriptWeave meringankan hari kerjamu.</h2>
+        <p class="section-sub">Setiap fitur dibuat untuk satu hal: mengurangi pekerjaan berulang supaya waktumu habis untuk masalah yang benar-benar menarik.</p>
+      </div>
+
+      <div class="feature-grid">
+        <article class="feature feature-complete reveal">
+          <div class="feature-text">
+            <p class="feature-tag">Weave Complete</p>
+            <h3>Saran kode multi-baris yang mengikuti gaya repo kamu.</h3>
+            <p>Mulai dari nama variabel sampai pola penanganan error, saran yang muncul selaras dengan kode yang sudah ada.</p>
+            <p class="benefit"><span>Manfaat</span>Boilerplate selesai dalam hitungan detik, fokusmu utuh untuk logika yang penting.</p>
+            <p class="keys" aria-label="Pintasan keyboard"><kbd>Tab</kbd> terima <kbd>Esc</kbd> tolak <kbd>Alt</kbd><kbd>]</kbd> saran lain</p>
+          </div>
+      <figure class="editor" aria-label="Demo ScriptWeave melengkapi fungsi dari sebuah komentar">
+        <div class="editor-bar">
+          <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="tab is-active">kontak.ts</span>
+          <span class="tab">pelanggan.ts</span>
+        </div>
+
+        <div class="code" id="demo-code">
+          <span class="line"><span class="k">import</span> { Pelanggan } <span class="k">from</span> <span class="s">"./pelanggan"</span>;</span>
+          <span class="line">&nbsp;</span>
+          <span class="line" data-role="prompt"><span class="c">// ubah nomor HP Indonesia ke format +62</span></span>
+          <span class="line" data-role="suggest"><span class="k">export function</span> <span class="f">formatNomorHp</span>(input: <span class="t">string</span>): <span class="t">string</span> {</span>
+          <span class="line" data-role="suggest">  <span class="k">const</span> digit = input.<span class="f">replace</span>(<span class="s">/\D/g</span>, <span class="s">""</span>);</span>
+          <span class="line" data-role="suggest">  <span class="k">if</span> (digit.<span class="f">startsWith</span>(<span class="s">"62"</span>)) <span class="k">return</span> <span class="s">`+${digit}`</span>;</span>
+          <span class="line" data-role="suggest">  <span class="k">if</span> (digit.<span class="f">startsWith</span>(<span class="s">"0"</span>)) <span class="k">return</span> <span class="s">`+62${digit.slice(1)}`</span>;</span>
+          <span class="line" data-role="suggest">  <span class="k">return</span> <span class="s">`+62${digit}`</span>;</span>
+          <span class="line" data-role="suggest">}</span>
+        </div>
+
+        <figcaption class="editor-status">
+          <span class="status-main"><i class="pulse" aria-hidden="true"></i><span id="demo-status">Diterima, 6 baris ditambahkan</span></span>
+          <span class="status-ctx">Konteks: kontak.ts, pelanggan.ts, util/teks.ts</span>
+          <button class="replay" id="demo-replay" type="button">Putar ulang</button>
+        </figcaption>
+      </figure>
+        </article>
+
+        <article class="feature feature-chat reveal">
+          <div class="feature-text">
+            <p class="feature-tag">Weave Chat</p>
+            <h3>Tanya codebase kamu seperti bertanya ke rekan senior.</h3>
+            <p>Pakai bahasa Indonesia atau Inggris. Setiap jawaban menyertakan file dan baris sumbernya.</p>
+            <p class="benefit"><span>Manfaat</span>Paham repo baru dalam hitungan jam, tanpa menunggu senior luang.</p>
+          </div>
+          <div class="mock chat" aria-label="Contoh percakapan Weave Chat">
+            <p class="msg msg-me">Di mana diskon voucher dihitung?</p>
+            <div class="msg msg-bot">
+              <p>Di <code>hitungDiskon()</code>, file <code>src/checkout/voucher.ts</code> baris 42. Fungsi ini dipanggil dari <code>buatPesanan()</code> sebelum ongkir ditambahkan.</p>
+              <p class="msg-src">Sumber: voucher.ts:42, pesanan.ts:118</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="feature feature-review reveal">
+          <div class="feature-text">
+            <p class="feature-tag">Weave Review</p>
+            <h3>Review otomatis di setiap pull request.</h3>
+            <p>ScriptWeave memeriksa bug logika, celah keamanan, dan kode yang menyimpang dari standar tim, lalu menawarkan perbaikannya.</p>
+            <p class="benefit"><span>Manfaat</span>Masalah tertangkap sebelum merge, reviewer manusia bisa fokus ke desain.</p>
+          </div>
+          <div class="mock diff" aria-label="Contoh hasil Weave Review pada sebuah pull request">
+            <p class="diff-file">src/pengguna/repo.ts</p>
+            <div class="diff-lines">
+              <span class="dl dl-del">- const q = "SELECT * FROM users WHERE id = " + id;</span>
+              <span class="dl dl-del">- return db.exec(q);</span>
+              <span class="dl dl-add">+ const q = "SELECT * FROM users WHERE id = ?";</span>
+              <span class="dl dl-add">+ return db.prepare(q).get(id);</span>
+            </div>
+            <p class="diff-note"><strong>ScriptWeave Review</strong> Risiko SQL injection: nilai <code>id</code> digabung langsung ke query. Pakai parameterized query seperti pada saran di atas.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="feature-minor">
+        <article class="minor th-turmeric reveal">
+          <p class="feature-tag">Weave Fix</p>
+          <p>Tempel pesan error atau stack trace. ScriptWeave menelusuri penyebabnya dan menawarkan perbaikan sebagai diff.</p>
+          <p class="benefit"><span>Manfaat</span>Waktu debugging terpangkas dan kamu tahu akar masalahnya.</p>
+        </article>
+        <article class="minor th-madder reveal">
+          <p class="feature-tag">Weave Test</p>
+          <p>Buat unit test dari fungsi yang sudah ada, lengkap dengan kasus tepi yang sering terlewat.</p>
+          <p class="benefit"><span>Manfaat</span>Cakupan test naik tanpa harus lembur.</p>
+        </article>
+        <article class="minor th-sky reveal">
+          <p class="feature-tag">Weave Docs</p>
+          <p>Docstring, README, dan catatan perubahan ditulis langsung dari kode yang sebenarnya.</p>
+          <p class="benefit"><span>Manfaat</span>Dokumentasi selalu selaras dengan kode terbaru.</p>
+        </article>
+      </div>
+
+      <div class="steps reveal">
+        <h3 class="steps-title">Mulai dalam tiga langkah</h3>
+        <ol class="steps-list">
+          <li>
+            <strong>Pasang ekstensi</strong>
+            <p>Cari “ScriptWeave” di marketplace editor kamu, lalu masuk dengan akun GitHub atau Google.</p>
+          </li>
+          <li>
+            <strong>Hubungkan repo</strong>
+            <p>ScriptWeave mengindeks proyekmu dalam beberapa menit supaya sarannya sesuai konteks.</p>
+          </li>
+          <li>
+            <strong>Mulai menulis</strong>
+            <p>Tekan <kbd>Tab</kbd> untuk menerima saran atau <kbd>Ctrl</kbd><kbd>I</kbd> untuk membuka Weave Chat.</p>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- d. PRICING / PACKAGES -->
+  <section class="section" id="harga">
+    <div class="wrap">
+      <div class="section-head section-head-row reveal">
+        <div>
+          <p class="eyebrow">// harga</p>
+          <h2>Harga jelas, dalam rupiah.</h2>
+          <p class="section-sub">Mulai gratis, naik paket saat kamu butuh, berhenti kapan saja.</p>
+        </div>
+        <div class="bill-toggle" role="group" aria-label="Periode tagihan">
+          <button type="button" class="is-on" data-bill="monthly" aria-pressed="true">Bulanan</button>
+          <button type="button" data-bill="yearly" aria-pressed="false">Tahunan <span class="save">hemat 20%</span></button>
+        </div>
+      </div>
+
+      <div class="plans">
+        <article class="plan reveal">
+          <h3>Starter</h3>
+          <p class="plan-for">Untuk belajar dan proyek pribadi.</p>
+          <p class="price"><span class="cur">Rp</span><span class="amt">0</span></p>
+          <p class="price-note">Gratis selamanya</p>
+          <a class="btn btn-ghost btn-block" href="#kontak" data-plan="Starter">Mulai Gratis</a>
+          <ul class="ticks">
+            <li>2.000 saran kode per bulan</li>
+            <li>50 pesan Weave Chat per bulan</li>
+            <li>1 repo pribadi</li>
+            <li>Ekstensi VS Code</li>
+            <li>Dukungan lewat komunitas</li>
+          </ul>
+        </article>
+
+        <article class="plan plan-featured reveal">
+          <p class="plan-flag">Rekomendasi kami</p>
+          <h3>Pro</h3>
+          <p class="plan-for">Untuk developer profesional dan freelancer.</p>
+          <p class="price"><span class="cur">Rp</span><span class="amt" data-monthly="150.000" data-yearly="120.000">150.000</span><span class="per">/bulan</span></p>
+          <p class="price-note" data-monthly="Ditagih setiap bulan" data-yearly="Ditagih Rp1.440.000 per tahun">Ditagih setiap bulan</p>
+          <a class="btn btn-primary btn-block" href="#kontak" data-plan="Pro">Coba Pro 14 Hari</a>
+          <ul class="ticks">
+            <li>Saran kode tanpa batas</li>
+            <li>Weave Chat tanpa batas</li>
+            <li>Weave Review untuk 100 pull request per bulan</li>
+            <li>Weave Fix, Test, dan Docs</li>
+            <li>Semua editor dan terminal</li>
+            <li>Repo tanpa batas</li>
+            <li>Dukungan email, dibalas maksimal 1 hari kerja</li>
+          </ul>
+        </article>
+
+        <article class="plan reveal">
+          <h3>Team</h3>
+          <p class="plan-for">Untuk startup dan tim engineering.</p>
+          <p class="price"><span class="cur">Rp</span><span class="amt" data-monthly="300.000" data-yearly="240.000">300.000</span><span class="per">/pengguna/bulan</span></p>
+          <p class="price-note" data-monthly="Ditagih setiap bulan" data-yearly="Ditagih Rp2.880.000 per pengguna per tahun">Ditagih setiap bulan</p>
+          <a class="btn btn-ghost btn-block" href="#kontak" data-plan="Team">Hubungi Tim Sales</a>
+          <ul class="ticks">
+            <li>Semua fitur Pro</li>
+            <li>Weave Review tanpa batas</li>
+            <li>Aturan tim: satu standar kode untuk semua anggota</li>
+            <li>Dasbor admin dan laporan pemakaian</li>
+            <li>SSO dengan Google Workspace dan Microsoft</li>
+            <li>Dukungan prioritas, dibalas maksimal 4 jam kerja</li>
+          </ul>
+        </article>
+      </div>
+
+      <ul class="price-foot reveal">
+        <li><strong>Mahasiswa dan pengajar</strong> mendapat diskon 50% paket Pro dengan email kampus.</li>
+        <li>Bayar dengan QRIS, transfer bank, kartu kredit, atau e-wallet. Harga belum termasuk PPN.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- e. FAQ -->
+  <section class="section section-alt" id="faq">
+    <div class="wrap split split-faq">
+      <div class="split-head reveal">
+        <p class="eyebrow">// faq</p>
+        <h2>Pertanyaan yang sering kami terima.</h2>
+        <p class="section-sub">Belum menemukan jawabannya? <a class="link" href="#kontak">Tulis ke tim kami</a>, biasanya dibalas dalam satu hari kerja.</p>
+      </div>
+
+      <div class="faq-list reveal">
+        <details open>
+          <summary>Apakah kode saya dipakai untuk melatih model AI?</summary>
+          <p>Tidak. Kode kamu hanya diproses untuk menghasilkan saran saat itu juga. Kami tidak menyimpannya untuk pelatihan model dan tidak membagikannya ke pihak ketiga. Semua data dienkripsi saat dikirim maupun disimpan.</p>
+        </details>
+        <details>
+          <summary>Editor dan bahasa pemrograman apa saja yang didukung?</summary>
+          <p>ScriptWeave tersedia sebagai ekstensi VS Code, plugin JetBrains IDE, plugin Neovim, dan CLI untuk terminal. Bahasa yang didukung penuh adalah TypeScript, JavaScript, Python, Go, Java, Kotlin, PHP, Dart, dan Rust. Bahasa lain tetap bisa dipakai, dengan kualitas saran yang bisa bervariasi.</p>
+        </details>
+        <details>
+          <summary>Apa bedanya ScriptWeave dengan chatbot AI biasa?</summary>
+          <p>Chatbot umum hanya tahu potongan kode yang kamu tempel. ScriptWeave mengindeks seluruh repo, jadi sarannya mengikuti struktur folder, fungsi yang sudah ada, dan gaya penulisan tim kamu. Semuanya terjadi di dalam editor, jadi kamu tidak perlu pindah jendela.</p>
+        </details>
+        <details>
+          <summary>Apakah ScriptWeave mengerti bahasa Indonesia?</summary>
+          <p>Ya. Kamu bisa menulis prompt, komentar, dan pertanyaan dalam bahasa Indonesia, bahasa Inggris, atau campuran keduanya.</p>
+        </details>
+        <details>
+          <summary>Apakah ScriptWeave akan menggantikan developer?</summary>
+          <p>Tidak. ScriptWeave mengerjakan bagian yang berulang dan membosankan. Keputusan arsitektur, review akhir, dan tanggung jawab atas kode tetap ada di tangan kamu. Setiap perubahan selalu muncul sebagai diff yang harus kamu setujui.</p>
+        </details>
+        <details>
+          <summary>Bagaimana cara bayar, dan bisakah berhenti kapan saja?</summary>
+          <p>Pembayaran bisa lewat QRIS, transfer bank, kartu kredit, atau e-wallet. Langganan bisa dihentikan kapan saja dari halaman akun, dan paketmu tetap aktif sampai akhir periode tagihan.</p>
+        </details>
+        <details>
+          <summary>Apakah ada diskon untuk mahasiswa?</summary>
+          <p>Ada. Mahasiswa dan pengajar mendapat diskon 50% untuk paket Pro. Daftar dengan email kampus berakhiran .ac.id, lalu verifikasi dari halaman akun.</p>
+        </details>
+        <details>
+          <summary>Bisakah ScriptWeave dipakai di jaringan internal perusahaan?</summary>
+          <p>Bisa. Untuk tim dengan kebutuhan keamanan khusus, kami menyediakan opsi pemasangan di cloud pribadi atau server milik perusahaan. Ceritakan kebutuhanmu lewat formulir kontak di bawah.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- f. CONTACT / CTA -->
+  <section class="section section-cta" id="kontak">
+    <div class="wrap contact-grid">
+      <div class="contact-copy reveal">
+        <p class="eyebrow">// kontak</p>
+        <h2>Siap menenun <span class="stitch">kode</span> pertamamu?</h2>
+        <p class="lede">Isi formulirnya dan kami kirimkan tautan pemasangan ke emailmu. Masih bingung memilih paket? Tulis kebutuhanmu, tim kami bantu carikan yang paling pas.</p>
+
+        <dl class="contact-list">
+          <div>
+            <dt>Email</dt>
+            <dd><span id="contact-email">halo@scriptweave.id</span> <button class="copy" type="button" data-copy="contact-email">Salin</button></dd>
+          </div>
+          <div>
+            <dt>Kantor</dt>
+            <dd>Jakarta Selatan, Indonesia</dd>
+          </div>
+          <div>
+            <dt>Jam layanan</dt>
+            <dd>Senin sampai Jumat, 09.00–18.00 WIB</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="contact-panel reveal">
+        <form class="form" id="contact-form" novalidate>
+          <div class="field">
+            <label for="f-nama">Nama</label>
+            <input id="f-nama" name="nama" type="text" autocomplete="name" placeholder="Nama lengkap kamu" required>
+            <p class="err" id="e-nama" hidden>Tulis namamu dulu, ya.</p>
+          </div>
+          <div class="field">
+            <label for="f-email">Email</label>
+            <input id="f-email" name="email" type="email" autocomplete="email" placeholder="nama@email.com" required>
+            <p class="err" id="e-email" hidden>Email belum valid. Contoh: nama@email.com</p>
+          </div>
+          <div class="field-row">
+            <div class="field">
+              <label for="f-peran">Saya seorang</label>
+              <select id="f-peran" name="peran">
+                <option>Mahasiswa</option>
+                <option>Developer individu</option>
+                <option>Anggota tim atau startup</option>
+                <option>Perwakilan perusahaan</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="f-paket">Paket yang diminati</label>
+              <select id="f-paket" name="paket">
+                <option>Starter</option>
+                <option>Pro</option>
+                <option>Team</option>
+                <option>Belum tahu</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label for="f-pesan">Pesan <span class="opt">(opsional)</span></label>
+            <textarea id="f-pesan" name="pesan" rows="4" placeholder="Ceritakan proyek atau pertanyaanmu"></textarea>
+          </div>
+          <button class="btn btn-primary btn-block" type="submit">Kirim dan Mulai</button>
+          <p class="form-note">Dengan mengirim formulir ini kamu setuju dihubungi lewat email oleh tim ScriptWeave.</p>
+        </form>
+
+        <div class="form-done" id="form-done" hidden tabindex="-1">
+          <p class="form-done-title">Terima kasih, <span id="done-nama">teman</span>.</p>
+          <p>Permintaan paket <strong id="done-paket">Starter</strong> kamu sudah kami catat. Tautan pemasangan akan dikirim ke <strong id="done-email">emailmu</strong>.</p>
+          <p class="form-done-demo">Catatan: ini situs demo, formulir belum terhubung ke server sehingga belum ada email yang benar-benar terkirim.</p>
+          <button class="btn btn-ghost" type="button" id="form-again">Kirim pesan lain</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div class="seam" aria-hidden="true"></div>
+
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div class="footer-brand">
+      <a class="brand" href="#beranda" aria-label="ScriptWeave, kembali ke beranda">
+        <svg class="mark" viewBox="0 0 24 24" aria-hidden="true">
+          <rect class="m-weft" x="2" y="6" width="20" height="4" rx="2"/>
+          <rect class="m-weft" x="2" y="14" width="20" height="4" rx="2"/>
+          <rect class="m-warp" x="6" y="2" width="4" height="20" rx="2"/>
+          <rect class="m-warp" x="14" y="2" width="4" height="20" rx="2"/>
+          <rect class="m-weft" x="5" y="6" width="6" height="4"/>
+          <rect class="m-weft" x="13" y="14" width="6" height="4"/>
+        </svg>
+        <span class="wordmark">Script<i>/</i>Weave</span>
+      </a>
+      <p>Tenun ide jadi kode. Asisten coding AI yang paham codebase kamu.</p>
+    </div>
+    <nav class="footer-nav" aria-label="Navigasi footer">
+      <div>
+        <p class="footer-title">Produk</p>
+        <a href="#fitur">Fitur</a>
+        <a href="#harga">Harga</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <div>
+        <p class="footer-title">Perusahaan</p>
+        <a href="#tentang">Tentang kami</a>
+        <a href="#kontak">Kontak</a>
+      </div>
+    </nav>
+  </div>
+  <div class="wrap footer-base">
+    <p>© 2026 ScriptWeave. Dibuat di Jakarta.</p>
+    <p>ScriptWeave adalah brand fiktif untuk proyek Creative Communication.</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
