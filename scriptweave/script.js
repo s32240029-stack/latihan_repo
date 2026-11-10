@@ -445,7 +445,8 @@
     }
     ctx.restore();
 
-    /* --- DOM layers --- */
+    /* --- DOM layers: only the pinned stage is driven from scroll; the stacked layout keeps its own flow --- */
+    if (!live) return;
     if (heroEl) {
       var hv = 1 - smooth(0.05, 0.17, p);
       heroEl.style.opacity = hv.toFixed(3);
@@ -509,6 +510,7 @@
 
   function resetStageStyles() {
     if (heroEl) { heroEl.style.opacity = ''; heroEl.style.transform = ''; heroEl.style.pointerEvents = ''; }
+    if (hintEl) hintEl.style.opacity = '';
     chapterEls.forEach(function (el) {
       el.style.opacity = '';
       el.style.removeProperty('--dy');
@@ -519,7 +521,7 @@
   function setMode() {
     if (!story || !stage || !cv || !cv.getContext) return;
     /* pin only when motion is welcome and the screen is tall enough to hold the stage */
-    var wantLive = !reduceMotion.matches && window.innerHeight >= 540;
+    var wantLive = !reduceMotion.matches && window.innerHeight >= 400;
     if (wantLive === live && (live || cv.classList.contains('is-static'))) {
       if (!live) render(0.97, 0);
       return;
