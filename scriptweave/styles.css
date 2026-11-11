@@ -1259,3 +1259,4 @@ h3 { font-size: var(--fs-h3); line-height: 1.08; letter-spacing: -.005em; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .js .reveal.is-waiting { opacity: 1; transform: none; }
 }
+.price-foot li:last-child:nth-child(odd) { grid-column: 1 / -1; }

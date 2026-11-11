@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Iklan ScriptWeave</title>
+<meta name="description" content="Tiga materi komunikasi pemasaran ScriptWeave: iklan awareness, iklan respons, dan email langsung.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:ital,wght@0,400..700;1,400..700&display=swap">
+<link rel="stylesheet" href="materi.css">
+<style>
+  /* each material = a labelled row: the brief on the left, the piece itself on the right */
+  .piece { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 24px clamp(24px, 4vw, 56px); align-items: start; padding: clamp(24px, 4.5vw, 56px); }
+  .brief { display: grid; gap: 14px; min-width: 0; }
+  .brief h2 { font-size: clamp(2.2rem, 1.2rem + 3vw, 3.8rem); line-height: .92; }
+  .brief dl { display: grid; border-top: 1px solid var(--ink); }
+  .brief dl div { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: .88rem; }
+  .brief dt { font-family: var(--font-mono); font-size: .68rem; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); padding-top: 3px; }
+  .stage { display: grid; gap: 18px; justify-items: center; min-width: 0; padding: clamp(16px, 3vw, 32px); border-radius: 10px; background: var(--paper-2); }
+  .cap { font-family: var(--font-mono); font-size: .7rem; letter-spacing: .04em; color: var(--muted); text-align: center; }
+  @media (max-width: 900px) { .piece { grid-template-columns: minmax(0, 1fr); } }
+
+  /* a. awareness poster, 4:5 */
+  .poster {
+    position: relative;
+    width: min(100%, 420px);
+    aspect-ratio: 4 / 5;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    padding: 7%;
+    border-radius: 6px;
+    background: var(--paper);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    container-type: inline-size;
+  }
+  .poster img { position: absolute; right: -6%; top: 24%; width: 56%; }
+  .poster h3 { position: relative; font-size: 15.5cqi; line-height: .84; }
+  .poster .p-body { position: relative; align-self: end; max-width: 50%; font-size: 3.6cqi; line-height: 1.45; color: var(--muted); }
+  .poster .p-foot { position: relative; display: flex; justify-content: space-between; align-items: center; gap: 8px; padding-top: 4%; margin-top: 5%; border-top: 1px solid var(--ink); font-family: var(--font-mono); font-size: 3cqi; }
+  .poster .p-foot .wordmark { font-size: 4.6cqi; gap: 2cqi; }
+  .poster .p-foot .mark { width: 5cqi; height: 5cqi; }
+  .poster .tagline { font-family: var(--font-display); font-style: italic; font-size: 4.6cqi; }
+
+  .board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; width: 100%; max-width: 520px; }
+  .frame { display: grid; gap: 6px; }
+  .frame-box { position: relative; aspect-ratio: 16 / 9; border-radius: 4px; background: var(--paper); overflow: hidden; box-shadow: 0 10px 24px -16px rgba(20, 26, 69, .5); display: grid; place-items: center; container-type: inline-size; }
+  .frame-box img { position: absolute; inset: 6% 0 auto; margin-inline: auto; height: 88%; width: auto; }
+  .frame-box b { position: relative; font-family: var(--font-display); font-weight: 400; font-size: 9cqi; text-transform: uppercase; line-height: .9; text-align: center; color: var(--ink); }
+  .frame-box.logo { background: var(--ink); }
+  .frame-box.logo b { color: var(--paper); }
+  .frame-box.logo i { display: block; font-style: italic; text-transform: none; font-size: 6cqi; color: var(--turmeric); margin-top: 3cqi; }
+  .frame p { font-family: var(--font-mono); font-size: .66rem; color: var(--muted); }
+
+  /* b. response: a 9:16 story and a search result */
+  .story {
+    width: min(100%, 300px);
+    aspect-ratio: 9 / 16;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 26px 22px 22px;
+    border-radius: 22px;
+    background: var(--ink);
+    color: var(--paper);
+    box-shadow: var(--shadow);
+    container-type: inline-size;
+    overflow: hidden;
+  }
+  .story .s-top { display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 3.6cqi; color: color-mix(in srgb, var(--paper) 70%, var(--ink)); }
+  .story .s-top .wordmark { color: var(--paper); font-size: 5.4cqi; gap: 2cqi; }
+  .story .s-top .wordmark i { color: var(--turmeric); }
+  .story .s-top .mark { width: 6cqi; height: 6cqi; }
+  .story .m-warp { fill: var(--paper); }
+  .story h3 { font-size: 14cqi; line-height: .86; }
+  .story h3 em { font-style: normal; color: var(--turmeric); }
+  .ticket { display: grid; gap: 1cqi; padding: 4cqi 5cqi; border: 2px dashed var(--turmeric); border-radius: 3cqi; }
+  .ticket code { font-size: 9cqi; font-weight: 700; letter-spacing: .12em; color: var(--turmeric); }
+  .ticket span { font-size: 4.3cqi; line-height: 1.4; }
+  .story ul { display: grid; gap: 2.4cqi; font-size: 5cqi; }
+  .story ul li::before { content: "\2713  "; color: #7fe0bd; }
+  .story .s-cta { margin-top: auto; display: grid; gap: 2.5cqi; text-align: center; }
+  .story .s-cta b { display: block; padding: 4.4cqi; border-radius: 999px; background: var(--turmeric); color: var(--turmeric-ink); font-size: 4.4cqi; letter-spacing: .08em; text-transform: uppercase; }
+  .story .s-cta small { font-size: 4cqi; color: color-mix(in srgb, var(--paper) 70%, var(--ink)); }
+
+  .serp { width: 100%; max-width: 520px; display: grid; gap: 4px; padding: 16px 18px; border-radius: 10px; background: #fff; color: #1f2430; box-shadow: 0 10px 24px -18px rgba(20, 26, 69, .5); font-family: var(--font-body); }
+  .serp .sp { display: flex; gap: 8px; align-items: center; font-size: .78rem; color: #4d5160; }
+  .serp .sp b { font-weight: 700; color: #1f2430; }
+  .serp .t { font-size: 1.15rem; line-height: 1.3; color: #2a3aa8; }
+  .serp .d { font-size: .86rem; line-height: 1.5; color: #4d5160; }
+
+  /* c. email */
+  .mail { width: 100%; max-width: 560px; border-radius: 10px; background: #fff; color: #1f2430; box-shadow: var(--shadow); overflow: hidden; font-size: .92rem; }
+  .mail-head { display: grid; gap: 4px; padding: 16px 20px; border-bottom: 1px solid #e6e2d8; background: #faf8f3; }
+  .mail-head p { display: grid; grid-template-columns: 4.6rem minmax(0, 1fr); gap: 8px; font-size: .8rem; color: #4d5160; }
+  .mail-head p b { font-weight: 600; color: #1f2430; overflow-wrap: anywhere; }
+  .mail-head .subj b { font-size: .95rem; }
+  .mail-body { display: grid; gap: 14px; padding: 0 0 22px; line-height: 1.6; }
+  .mail-hero { padding: 22px 24px 18px; background: var(--paper); border-bottom: 1px solid var(--line); color: var(--ink); }
+  .mail-hero .wordmark { font-size: 1.1rem; }
+  .mail-hero h3 { margin-top: 14px; font-size: clamp(1.9rem, 1.3rem + 1.6vw, 2.5rem); line-height: .92; }
+  .mail-body > p, .mail-body > ul, .mail-body > .mail-cta { margin-inline: 24px; }
+  .mail-body ul { display: grid; gap: 6px; padding-left: 0; }
+  .mail-body ul li { position: relative; padding-left: 22px; }
+  .mail-body ul li::before { content: ""; position: absolute; left: 2px; top: .62em; width: 10px; height: 4px; border-radius: 2px; background: var(--turmeric); }
+  .price-strike { font-family: var(--font-display); font-size: 1.9rem; line-height: 1; color: var(--ink); }
+  .price-strike s { font-size: 1.1rem; color: #8a8ea3; margin-left: 8px; }
+  .mail-cta a { display: inline-block; padding: 13px 22px; border-radius: 999px; background: var(--ink); color: var(--paper); text-decoration: none; font-size: .78rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+  .mail-foot { margin-inline: 24px; padding-top: 12px; border-top: 1px solid #e6e2d8; font-size: .72rem; color: #6b6f80; }
+  .var { padding: 0 4px; border-radius: 3px; background: color-mix(in srgb, var(--turmeric) 22%, #fff); font-family: var(--font-mono); font-size: .86em; }
+
+  /* comparison */
+  .compare h2 { font-size: clamp(2.2rem, 1.2rem + 3vw, 3.8rem); line-height: .92; }
+  .compare .sheet-in { gap: 20px; }
+  .compare table { min-width: 640px; }
+  .compare tbody th { font-family: var(--font-mono); font-size: .7rem; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); width: 16%; }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="bar-in">
+    <span class="wordmark">
+      <svg class="mark" viewBox="0 0 24 24" aria-hidden="true"><rect class="m-weft" x="2" y="6" width="20" height="4" rx="2"/><rect class="m-weft" x="2" y="14" width="20" height="4" rx="2"/><rect class="m-warp" x="6" y="2" width="4" height="20" rx="2"/><rect class="m-warp" x="14" y="2" width="4" height="20" rx="2"/><rect class="m-weft" x="5" y="6" width="6" height="4"/><rect class="m-weft" x="13" y="14" width="6" height="4"/></svg>
+      <span>Script<i>/</i>Weave</span>
+    </span>
+    <nav aria-label="Materi iklan">
+      <a href="#awareness">a. Awareness</a>
+      <a href="#respons">b. Respons</a>
+      <a href="#email">c. Email</a>
+      <a href="#perbedaan">Perbedaan</a>
+    </nav>
+  </div>
+</header>
+
+<main class="desk">
+
+  <!-- a. High-Profile Brand Awareness Advertisement -->
+  <section class="sheet" id="awareness" aria-labelledby="a-h">
+    <div class="piece">
+      <div class="brief">
+        <p class="eyebrow">// a. high-profile brand awareness</p>
+        <h2 id="a-h">Membuat ScriptWeave dikenal.</h2>
+        <p class="muted">Iklan emosional dengan sedikit kata. Metafora tenun membuat brand mudah diingat; tidak ada harga atau tombol.</p>
+        <dl>
+          <div><dt>Media</dt><dd>Feed Instagram dan LinkedIn 1080 × 1350 px, bumper YouTube 6 detik</dd></div>
+          <div><dt>Sasaran</dt><dd>Developer Indonesia secara luas</dd></div>
+          <div><dt>Diukur dari</dt><dd>Jangkauan, tayangan, ingatan brand</dd></div>
+        </dl>
+      </div>
+      <div class="stage">
+        <article class="poster" aria-label="Poster iklan awareness">
+          <h3>Kode yang rapi itu ditenun.</h3>
+          <img src="assets/ball.webp" alt="" width="835" height="1498">
+          <p class="p-body">ScriptWeave membaca seluruh codebase kamu, lalu menenun saran yang terasa ditulis rekan satu tim.</p>
+          <div class="p-foot">
+            <span class="wordmark"><svg class="mark" viewBox="0 0 24 24" aria-hidden="true"><rect class="m-weft" x="2" y="6" width="20" height="4" rx="2"/><rect class="m-weft" x="2" y="14" width="20" height="4" rx="2"/><rect class="m-warp" x="6" y="2" width="4" height="20" rx="2"/><rect class="m-warp" x="14" y="2" width="4" height="20" rx="2"/><rect class="m-weft" x="5" y="6" width="6" height="4"/><rect class="m-weft" x="13" y="14" width="6" height="4"/></svg><span>Script<i>/</i>Weave</span></span>
+            <span class="tagline">Tenun ide jadi kode.</span>
+          </div>
+        </article>
+        <p class="cap">Poster feed, 4:5</p>
+        <div class="board" aria-label="Storyboard bumper 6 detik">
+          <div class="frame"><div class="frame-box"><img src="assets/ball.webp" alt="" width="835" height="1498"></div><p>0–2 dtk · “Kode yang rapi”</p></div>
+          <div class="frame"><div class="frame-box"><img src="assets/weaving.webp" alt="" width="1000" height="1340"></div><p>2–4 dtk · “itu ditenun.”</p></div>
+          <div class="frame"><div class="frame-box logo"><b>ScriptWeave<i>Tenun ide jadi kode.</i></b></div><p>4–6 dtk · logo</p></div>
+        </div>
+        <p class="cap">Storyboard bumper YouTube, 6 detik</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- b. Hard-Working Response Advertisement -->
+  <section class="sheet" id="respons" aria-labelledby="b-h">
+    <div class="piece">
+      <div class="brief">
+        <p class="eyebrow">// b. hard-working response</p>
+        <h2 id="b-h">Mendorong orang mencoba sekarang.</h2>
+        <p class="muted">Iklan rasional: penawaran jelas, bukti fitur, batas waktu, dan satu tombol. Kode promo membuat hasilnya bisa diukur.</p>
+        <dl>
+          <div><dt>Media</dt><dd>Story Instagram, LinkedIn Sponsored Post, iklan pencarian untuk “AI coding assistant” dan “asisten coding”</dd></div>
+          <div><dt>Sasaran</dt><dd>Developer yang sedang mencari asisten coding</dd></div>
+          <div><dt>Diukur dari</dt><dd>Klik, pemasangan, pemakaian kode TENUN30</dd></div>
+        </dl>
+      </div>
+      <div class="stage">
+        <article class="story" aria-label="Iklan story 9:16">
+          <div class="s-top">
+            <span class="wordmark"><svg class="mark" viewBox="0 0 24 24" aria-hidden="true"><rect class="m-weft" x="2" y="6" width="20" height="4" rx="2"/><rect class="m-weft" x="2" y="14" width="20" height="4" rx="2"/><rect class="m-warp" x="6" y="2" width="4" height="20" rx="2"/><rect class="m-warp" x="14" y="2" width="4" height="20" rx="2"/><rect class="m-weft" x="5" y="6" width="6" height="4"/><rect class="m-weft" x="13" y="14" width="6" height="4"/></svg><span>Script<i>/</i>Weave</span></span>
+            <span>Bersponsor</span>
+          </div>
+          <h3>Coba Pro gratis <em>30 hari.</em></h3>
+          <div class="ticket">
+            <code>TENUN30</code>
+            <span>Pakai saat mendaftar. Uji coba 14 hari jadi 30 hari, sampai 31 Januari 2027.</span>
+          </div>
+          <ul>
+            <li>Saran kode tanpa batas</li>
+            <li>Review otomatis 100 PR/bulan</li>
+            <li>Mode Agen</li>
+            <li>Tanpa kartu kredit</li>
+          </ul>
+          <div class="s-cta">
+            <b>Coba Gratis Sekarang</b>
+            <small>Pasang di VS Code dalam 2 menit</small>
+          </div>
+        </article>
+        <p class="cap">Story / Reels, 9:16</p>
+        <article class="serp" aria-label="Iklan pencarian">
+          <p class="sp"><b>Bersponsor</b> · scriptweave.id</p>
+          <p class="t">ScriptWeave Asisten Coding AI · Coba Pro Gratis 30 Hari</p>
+          <p class="d">Paham seluruh repo kamu. Saran kode, review PR, dan unit test otomatis. Pakai kode TENUN30 sampai 31 Jan 2027.</p>
+        </article>
+        <p class="cap">Iklan pencarian</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- c. Direct Marketing Message -->
+  <section class="sheet" id="email" aria-labelledby="c-h">
+    <div class="piece">
+      <div class="brief">
+        <p class="eyebrow">// c. direct marketing message</p>
+        <h2 id="c-h">Mengajak pengguna gratis naik ke Pro.</h2>
+        <p class="muted">Pesan personal untuk segmen sempit: memakai nama dan data pemakaian, dengan penawaran khusus mahasiswa.</p>
+        <dl>
+          <div><dt>Media</dt><dd>Email langsung</dd></div>
+          <div><dt>Sasaran</dt><dd>Pengguna Starter dengan email kampus .ac.id yang sudah memakai lebih dari separuh kuota bulanan</dd></div>
+          <div><dt>Diukur dari</dt><dd>Rasio buka, klik, jumlah yang berlangganan Pro</dd></div>
+        </dl>
+        <p class="muted" style="font-size:.84rem">Teks yang disorot adalah isian otomatis untuk setiap penerima.</p>
+      </div>
+      <div class="stage">
+        <article class="mail" aria-label="Email direct marketing">
+          <div class="mail-head">
+            <p><span>Dari</span><b>Tim ScriptWeave &lt;halo@scriptweave.id&gt;</b></p>
+            <p class="subj"><span>Subjek</span><b><span class="var">{{nama_depan}}</span>, ScriptWeave Pro setengah harga untuk mahasiswa</b></p>
+            <p><span>Preheader</span><span>Cukup verifikasi email kampusmu. Rp75.000 per bulan, berhenti kapan saja.</span></p>
+          </div>
+          <div class="mail-body">
+            <div class="mail-hero">
+              <span class="wordmark"><svg class="mark" viewBox="0 0 24 24" aria-hidden="true"><rect class="m-weft" x="2" y="6" width="20" height="4" rx="2"/><rect class="m-weft" x="2" y="14" width="20" height="4" rx="2"/><rect class="m-warp" x="6" y="2" width="4" height="20" rx="2"/><rect class="m-warp" x="14" y="2" width="4" height="20" rx="2"/><rect class="m-weft" x="5" y="6" width="6" height="4"/><rect class="m-weft" x="13" y="14" width="6" height="4"/></svg><span>Script<i>/</i>Weave</span></span>
+              <h3>Pro setengah harga untuk mahasiswa.</h3>
+            </div>
+            <p>Hai <span class="var">{{nama_depan}}</span>,</p>
+            <p>Bulan ini kamu sudah memakai <span class="var">{{jumlah_saran}}</span> dari 2.000 saran kode di paket Starter. Sepertinya tugas dan proyekmu sedang ramai.</p>
+            <p>Sebagai mahasiswa, kamu bisa memakai ScriptWeave Pro dengan diskon 50%:</p>
+            <p class="price-strike">Rp75.000/bulan<s>Rp150.000</s></p>
+            <ul>
+              <li>Saran kode dan Weave Chat tanpa batas</li>
+              <li>Weave Test untuk unit test tugas dan skripsi</li>
+              <li>Weave Docs untuk README dan dokumentasi laporan</li>
+              <li>Mode Agen dengan 3 agen paralel</li>
+            </ul>
+            <p>Caranya cukup satu langkah: verifikasi email kampusmu dari halaman akun.</p>
+            <p class="mail-cta"><a href="#email">Verifikasi email kampus</a></p>
+            <p>Selamat menenun kode,<br>Tim ScriptWeave</p>
+            <p class="muted" style="font-size:.86rem">P.S. Diskon berlaku selama kamu masih terdaftar sebagai mahasiswa, dan langganan bisa dihentikan kapan saja.</p>
+            <p class="mail-foot">ScriptWeave · Jakarta Selatan, Indonesia · Kamu menerima email ini karena mendaftar ScriptWeave Starter. Berhenti berlangganan.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- difference between the three -->
+  <section class="sheet compare" id="perbedaan" aria-labelledby="d-h">
+    <div class="sheet-in">
+      <div>
+        <p class="eyebrow">// perbedaan tujuan dan pendekatan</p>
+        <h2 id="d-h">Kenal, coba, lalu berlangganan.</h2>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th scope="col">Aspek</th><th scope="col">a. Brand awareness</th><th scope="col">b. Response</th><th scope="col">c. Direct marketing</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Tujuan</th><td>Brand dikenal dan diingat</td><td>Tindakan segera: memasang dan mencoba Pro</td><td>Pengguna gratis menjadi pelanggan berbayar</td></tr>
+            <tr><th scope="row">Tahap funnel</th><td>Awareness</td><td>Interest sampai Action</td><td>Conversion dan retensi</td></tr>
+            <tr><th scope="row">Sasaran</th><td>Semua developer Indonesia</td><td>Developer yang sedang mencari asisten coding</td><td>Pengguna Starter dengan email kampus</td></tr>
+            <tr><th scope="row">Pendekatan</th><td>Emosional dan visual, sedikit kata</td><td>Rasional: penawaran, bukti, batas waktu</td><td>Personal: nama, data pemakaian, penawaran segmen</td></tr>
+            <tr><th scope="row">CTA</th><td>Tanpa tombol; logo dan alamat web</td><td>Coba Gratis Sekarang, kode TENUN30</td><td>Verifikasi email kampus</td></tr>
+            <tr><th scope="row">Diukur dari</th><td>Jangkauan, tayangan, ingatan brand</td><td>Klik, pemasangan, pemakaian kode</td><td>Rasio buka, klik, langganan Pro</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="muted">Iklan awareness menjual siapa ScriptWeave, iklan respons menjual alasan mencoba sekarang, dan email langsung menjual langkah berikutnya kepada orang yang sudah mengenal produknya.</p>
+    </div>
+    <div class="seam" aria-hidden="true"></div>
+    <div class="sheet-foot"><span>ScriptWeave adalah brand fiktif untuk proyek Creative Communication.</span><span>Materi iklan</span></div>
+  </section>
+
+</main>
+</body>
+</html>

@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Katalog ScriptWeave</title>
+<meta name="description" content="Katalog produk ScriptWeave 2026/2027: asisten coding AI yang paham seluruh codebase kamu.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:ital,wght@0,400..700;1,400..700&display=swap">
+<link rel="stylesheet" href="materi.css">
+<style>
+  /* catalogue pages: landscape A4 sheets on desktop, free height on phones */
+  /* at least a landscape A4 tall; a page with more content grows instead of clipping */
+  .page { min-height: calc(min(1148px, 100vw - 32px) * 210 / 297); }
+  @media (max-width: 860px) { .page { min-height: 0; } }
+
+  /* 1. cover */
+  .cover .sheet-in { grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); align-items: stretch; gap: 0 32px; }
+  .cover-copy { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+  .cover h1 { font-size: clamp(3.4rem, 1.4rem + 7.6vw, 8.6rem); line-height: .84; margin-top: auto; }
+  .cover-sub { max-width: 26rem; font-size: 1.08rem; color: var(--muted); }
+  .cover-meta { display: flex; flex-wrap: wrap; gap: 8px 28px; margin-top: auto; font-family: var(--font-mono); font-size: .76rem; color: var(--muted); }
+  .cover-meta strong { display: block; color: var(--ink); font-weight: 700; }
+  .cover-art { position: relative; display: flex; align-items: flex-start; justify-content: center; min-width: 0; margin: clamp(-60px, -4.5vw, -24px) clamp(-60px, -4.5vw, -24px) clamp(-60px, -4.5vw, -24px) 0; overflow: hidden; }
+  .cover-art img { width: min(100%, 460px); margin-top: 4%; }
+  @media (max-width: 860px) {
+    .cover .sheet-in { grid-template-columns: minmax(0, 1fr); }
+    .cover-art { order: -1; margin: -24px -24px 0; max-height: 360px; }
+    .cover-art img { width: min(62%, 300px); margin-top: 0; }
+  }
+
+  /* 2. brand introduction */
+  .intro .sheet-in { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px clamp(28px, 5vw, 72px); align-content: start; }
+  .intro h2 { font-size: clamp(2.3rem, 1.2rem + 3.6vw, 4.4rem); line-height: .92; color: var(--ink); }
+  .intro-story { display: grid; gap: 14px; align-content: start; color: var(--muted); }
+  .intro-story em { font-family: var(--font-display); font-size: 1.3em; line-height: 1; color: var(--ink); }
+  .name-eq { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; padding: 18px 0; border-block: 1px solid var(--ink); font-family: var(--font-display); font-size: clamp(1.6rem, 1.1rem + 1.6vw, 2.5rem); line-height: 1; text-transform: uppercase; }
+  .name-eq small { font-family: var(--font-body); font-size: .82rem; text-transform: none; color: var(--muted); }
+  .name-eq b { font-weight: 400; color: var(--accent-text); }
+  .pillars { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px 32px; align-self: end; }
+  .pillars li { display: grid; gap: 8px; padding-top: 16px; border-top: 3px solid var(--thread); }
+  .pillars strong { font-family: var(--font-display); font-size: 1.5rem; font-weight: 400; line-height: 1.05; }
+  .pillars span { font-size: .9rem; color: var(--muted); }
+  .t-gold { --thread: var(--turmeric); }
+  .t-red { --thread: var(--madder); }
+  .t-blue { --thread: var(--yarn); }
+  @media (max-width: 860px) {
+    .intro .sheet-in, .pillars { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  /* 3. product overview */
+  .overview .sheet-in { grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 24px clamp(28px, 5vw, 72px); }
+  .overview-copy { display: grid; gap: 20px; align-content: start; min-width: 0; }
+  .overview h2 { font-size: clamp(2.3rem, 1.2rem + 3.6vw, 4.4rem); line-height: .92; }
+  .flow { display: grid; gap: 14px; counter-reset: step; }
+  .flow li { counter-increment: step; display: grid; grid-template-columns: 2.2rem minmax(0, 1fr); gap: 4px 12px; }
+  .flow li::before { content: counter(step) "."; grid-row: span 2; font-family: var(--font-display); font-size: 1.8rem; line-height: 1; }
+  .flow strong { font-family: var(--font-display); font-size: 1.45rem; font-weight: 400; line-height: 1.1; text-transform: uppercase; }
+  .flow span { font-size: .9rem; color: var(--muted); }
+  .overview-art { display: grid; gap: 18px; align-content: center; min-width: 0; }
+  .overview-art img { width: 100%; max-width: 360px; justify-self: center; }
+  .runs { display: grid; gap: 8px; }
+  .runs p { font-family: var(--font-mono); font-size: .72rem; letter-spacing: .04em; color: var(--muted); }
+  @media (max-width: 860px) { .overview .sheet-in { grid-template-columns: minmax(0, 1fr); } }
+
+  /* 4. product entries */
+  .entries-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 32px; }
+  .entries h2 { font-size: clamp(2.3rem, 1.2rem + 3.6vw, 4.4rem); line-height: .92; }
+  .entry-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+  .entry { display: grid; grid-template-rows: auto auto 1fr auto auto; gap: 8px; padding: 18px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper-2); min-width: 0; }
+  .entry-no { font-family: var(--font-mono); font-size: .72rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .entry h3 { font-size: 1.55rem; line-height: 1; }
+  .entry p { font-size: .86rem; line-height: 1.5; }
+  .entry .desc { color: var(--muted); }
+  .entry .gain { padding-top: 8px; border-top: 1px dashed var(--line); }
+  .entry .gain b { display: block; font-family: var(--font-mono); font-size: .66rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ok); }
+  .entry .where { font-family: var(--font-mono); font-size: .68rem; letter-spacing: .02em; color: var(--accent-text); }
+  .entry.hero { grid-column: span 2; background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .entry.hero .desc, .entry.hero .entry-no { color: color-mix(in srgb, var(--paper) 72%, var(--ink)); }
+  .entry.hero .gain { border-top-color: color-mix(in srgb, var(--paper) 30%, var(--ink)); }
+  .entry.hero .gain b { color: #7fe0bd; }
+  .entry.hero .where { color: var(--turmeric); }
+  @media (max-width: 1000px) { .entry-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 560px) { .entry-grid { grid-template-columns: minmax(0, 1fr); } .entry.hero { grid-column: auto; } }
+
+  /* 5. packages */
+  .packages h2 { font-size: clamp(2.3rem, 1.2rem + 3.6vw, 4.4rem); line-height: .92; }
+  .pkg-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; align-items: start; }
+  .pkg { display: grid; gap: 10px; padding: 20px; border: 1px solid var(--line); border-radius: 10px; min-width: 0; }
+  .pkg.featured { border: 1.5px solid var(--ink); background: var(--paper-2); }
+  .pkg h3 { font-size: 2rem; line-height: 1; }
+  .pkg .for { font-size: .84rem; color: var(--muted); }
+  .price { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px; font-family: var(--font-display); font-variant-numeric: lining-nums tabular-nums; }
+  .price .cur { font-size: 1.2rem; color: var(--muted); }
+  .price .amt { font-size: clamp(2.2rem, 1.6rem + 1.6vw, 3rem); line-height: .95; }
+  .price .per { font-family: var(--font-body); font-size: .8rem; color: var(--muted); margin-left: 4px; }
+  .pkg .yearly { font-family: var(--font-mono); font-size: .7rem; color: var(--muted); }
+  .pkg .ticks { padding-top: 12px; border-top: 1px solid var(--line); }
+  .pkg .ticks li { font-size: .84rem; }
+  .specs { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 32px; }
+  .specs table { font-size: .84rem; }
+  .specs th { width: 34%; font-family: var(--font-mono); font-size: .7rem; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+  @media (max-width: 860px) { .pkg-grid, .specs { grid-template-columns: minmax(0, 1fr); } }
+
+  /* 6. CTA */
+  .cta .sheet-in { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px clamp(28px, 5vw, 72px); }
+  .cta-copy { display: grid; gap: 22px; align-content: start; min-width: 0; }
+  .cta h2 { font-size: clamp(2.8rem, 1.4rem + 4.6vw, 5.6rem); line-height: .88; }
+  .start { display: grid; gap: 10px; counter-reset: s; }
+  .start li { counter-increment: s; display: flex; gap: 12px; align-items: baseline; font-size: .95rem; }
+  .start li::before { content: counter(s) "."; font-family: var(--font-display); font-size: 1.5rem; line-height: 1; min-width: 1.6rem; }
+  .coupon { display: grid; gap: 4px; padding: 16px 18px; border: 2px dashed var(--turmeric); border-radius: 10px; background: color-mix(in srgb, var(--turmeric) 10%, var(--paper)); }
+  .coupon code { font-size: 1.5rem; font-weight: 700; letter-spacing: .12em; }
+  .coupon span { font-size: .84rem; color: var(--muted); }
+  .cta-side { display: grid; gap: 18px; align-content: start; min-width: 0; }
+  .cta-side img { width: 100%; max-width: 400px; justify-self: center; }
+  .contact { display: grid; border-top: 1px solid var(--ink); }
+  .contact div { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: .9rem; }
+  .contact dt { font-family: var(--font-mono); font-size: .7rem; color: var(--muted); padding-top: 3px; }
+  .contact dd { overflow-wrap: anywhere; }
+  @media (max-width: 860px) { .cta .sheet-in { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="bar-in">
+    <a class="wordmark" href="#sampul" aria-label="ScriptWeave, ke sampul katalog">
+      <svg class="mark" viewBox="0 0 24 24" aria-hidden="true"><rect class="m-weft" x="2" y="6" width="20" height="4" rx="2"/><rect class="m-weft" x="2" y="14" width="20" height="4" rx="2"/><rect class="m-warp" x="6" y="2" width="4" height="20" rx="2"/><rect class="m-warp" x="14" y="2" width="4" height="20" rx="2"/><rect class="m-weft" x="5" y="6" width="6" height="4"/><rect class="m-weft" x="13" y="14" width="6" height="4"/></svg>
+      <span>Script<i>/</i>Weave</span>
+    </a>
+    <nav aria-label="Halaman katalog">
+      <a href="#sampul">Sampul</a>
+      <a href="#brand">Brand</a>
+      <a href="#ikhtisar">Ikhtisar</a>
+      <a href="#fitur">Fitur</a>
+      <a href="#paket">Paket</a>
+      <a href="#mulai">Mulai</a>
+    </nav>
+  </div>
+</header>
+
+<main class="desk">
+
+  <!-- 1. Catalogue Cover -->
+  <section class="sheet page cover" id="sampul" aria-label="Sampul katalog">
+    <div class="sheet-in">
+      <div class="cover-copy">
+        <a class="wordmark" href="#sampul" tabindex="-1" aria-hidden="true">
+          <svg class="mark" viewBox="0 0 24 24"><rect class="m-weft" x="2" y="6" width="20" height="4" rx="2"/><rect class="m-weft" x="2" y="14" width="20" height="4" rx="2"/><rect class="m-warp" x="6" y="2" width="4" height="20" rx="2"/><rect class="m-warp" x="14" y="2" width="4" height="20" rx="2"/><rect class="m-weft" x="5" y="6" width="6" height="4"/><rect class="m-weft" x="13" y="14" width="6" height="4"/></svg>
+          <span>Script<i>/</i>Weave</span>
+        </a>
+        <p class="eyebrow">// katalog produk</p>
+        <h1>Tenun ide jadi kode.</h1>
+        <p class="cover-sub">Asisten coding AI yang membaca seluruh codebase kamu, lalu membantu menulis, me-review, dan memperbaiki kode sampai siap rilis.</p>
+        <div class="cover-meta">
+          <p><strong>Edisi</strong>2026/2027</p>
+          <p><strong>Berlaku</strong>Desember 2026</p>
+          <p><strong>Web</strong>scriptweave.id</p>
+        </div>
+      </div>
+      <figure class="cover-art">
+        <img src="assets/ball.webp" alt="Gulungan benang indigo dengan pita benang kuning, seutas benang menjuntai ke bawah" width="835" height="1498">
+      </figure>
+    </div>
+    <div class="seam" aria-hidden="true"></div>
+    <div class="sheet-foot"><span>ScriptWeave · Katalog Produk 2026/2027</span><span>01 / 06</span></div>
+  </section>
+
+  <!-- 2. Brand Introduction -->
+  <section class="sheet page intro" id="brand" aria-labelledby="brand-h">
+    <div class="sheet-in">
+      <div class="intro-story">
+        <p class="eyebrow">// perkenalan brand</p>
+        <h2 id="brand-h">Lahir dari engineer yang lelah mengulang.</h2>
+      </div>
+      <div class="intro-story">
+        <p>ScriptWeave lahir di Jakarta Selatan dari tim kecil engineer yang setiap hari menulis boilerplate, mencari fungsi di repo asing, dan menunggu review berhari-hari. Kami membuat asisten yang kami sendiri ingin pakai.</p>
+        <p class="name-eq"><span>Script</span><small>kode yang kamu tulis</small><b>+</b><span>Weave</span><small>menenun</small></p>
+        <p>Seperti penenun yang menyatukan benang lungsin dan pakan menjadi kain, ScriptWeave menyatukan <em>niat kamu</em>, <em>konteks codebase</em>, dan <em>standar tim</em> menjadi kode yang rapi.</p>
+      </div>
+      <ul class="pillars">
+        <li class="t-gold"><strong>Konteks dulu, baru kode</strong><span>Saran mengikuti struktur repo, konvensi penamaan, dan dependensi yang sudah ada.</span></li>
+        <li class="t-red"><strong>Kamu tetap pegang kemudi</strong><span>Setiap perubahan muncul sebagai diff yang bisa kamu terima, ubah, atau tolak.</span></li>
+        <li class="t-blue"><strong>Kode kamu milik kamu</strong><span>Dienkripsi saat dikirim dan disimpan, dan tidak pernah dipakai untuk melatih model.</span></li>
+      </ul>
+    </div>
+    <div class="sheet-foot"><span>ScriptWeave · Katalog Produk 2026/2027</span><span>02 / 06</span></div>
+  </section>
+
+  <!-- 3. Product Overview -->
+  <section class="sheet page overview" id="ikhtisar" aria-labelledby="ikhtisar-h">
+    <div class="sheet-in">
+      <div class="overview-copy">
+        <p class="eyebrow">// ikhtisar produk</p>
+        <h2 id="ikhtisar-h">Satu asisten, dari baris pertama sampai rilis.</h2>
+        <p class="muted">ScriptWeave bekerja di dalam editor yang sudah kamu pakai. Setelah repo terhubung, ia mengindeks proyekmu dalam beberapa menit, lalu membantu di setiap tahap.</p>
+        <ol class="flow">
+          <li><strong>Urai konteks</strong><span>Membaca struktur repo, fungsi, dan dependensi kamu.</span></li>
+          <li><strong>Tenun saran</strong><span>Mengubah komentar atau prompt menjadi kode yang mengikuti gaya repo.</span></li>
+          <li><strong>Rapikan sebelum rilis</strong><span>Me-review, menguji, dan mendokumentasikan, lalu menunggu persetujuanmu.</span></li>
+        </ol>
+      </div>
+      <div class="overview-art">
+        <img src="assets/weaving.webp" alt="Benang indigo terurai menjadi lungsin dan ditenun baris demi baris dengan benang berwarna seperti baris kode" width="1000" height="1340">
+        <div class="runs">
+          <p>Jalan di</p>
+          <ul class="chips"><li>VS Code</li><li>JetBrains IDE</li><li>Neovim</li><li>Terminal</li></ul>
+          <p>Bahasa yang didukung penuh</p>
+          <ul class="chips soft"><li>TypeScript</li><li>JavaScript</li><li>Python</li><li>Go</li><li>Java</li><li>Kotlin</li><li>PHP</li><li>Dart</li><li>Rust</li></ul>
+        </div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span>ScriptWeave · Katalog Produk 2026/2027</span><span>03 / 06</span></div>
+  </section>
+
+  <!-- 4. Product Entries -->
+  <section class="sheet page entries" id="fitur" aria-labelledby="fitur-h">
+    <div class="sheet-in">
+      <div class="entries-head">
+        <div>
+          <p class="eyebrow">// daftar fitur</p>
+          <h2 id="fitur-h">Tujuh fitur, satu tujuan.</h2>
+        </div>
+        <p class="muted" style="max-width:24rem">Setiap fitur mengurangi pekerjaan berulang, supaya waktumu habis untuk masalah yang menarik.</p>
+      </div>
+      <div class="entry-grid">
+        <article class="entry">
+          <p class="entry-no">01</p>
+          <h3>Weave Complete</h3>
+          <p class="desc">Saran kode multi-baris yang mengikuti nama variabel, pola penanganan error, dan gaya repo kamu. Tekan Tab untuk menerima.</p>
+          <p class="gain"><b>Manfaat</b>Boilerplate selesai dalam hitungan detik, fokus utuh untuk logika yang penting.</p>
+          <p class="where">Starter 2.000 saran/bulan · Pro dan Team tanpa batas</p>
+        </article>
+        <article class="entry">
+          <p class="entry-no">02</p>
+          <h3>Weave Chat</h3>
+          <p class="desc">Tanya codebase dalam bahasa Indonesia atau Inggris. Jawaban menyertakan file dan baris sumbernya.</p>
+          <p class="gain"><b>Manfaat</b>Paham repo baru dalam hitungan jam.</p>
+          <p class="where">Starter 50 pesan/bulan · Pro dan Team tanpa batas</p>
+        </article>
+        <article class="entry">
+          <p class="entry-no">03</p>
+          <h3>Weave Review</h3>
+          <p class="desc">Review otomatis di setiap pull request untuk bug logika, celah keamanan, dan standar tim.</p>
+          <p class="gain"><b>Manfaat</b>Masalah tertangkap sebelum merge.</p>
+          <p class="where">Pro 100 PR/bulan · Team tanpa batas</p>
+        </article>
+        <article class="entry">
+          <p class="entry-no">04</p>
+          <h3>Weave Fix</h3>
+          <p class="desc">Tempel error atau stack trace. ScriptWeave menelusuri penyebabnya dan menawarkan perbaikan sebagai diff.</p>
+          <p class="gain"><b>Manfaat</b>Debugging lebih singkat, akar masalah jelas.</p>
+          <p class="where">Pro dan Team</p>
+        </article>
+        <article class="entry">
+          <p class="entry-no">05</p>
+          <h3>Weave Test</h3>
+          <p class="desc">Membuat unit test dari fungsi yang ada, lengkap dengan kasus tepi yang sering terlewat.</p>
+          <p class="gain"><b>Manfaat</b>Cakupan test naik tanpa lembur.</p>
+          <p class="where">Pro dan Team</p>
+        </article>
+        <article class="entry">
+          <p class="entry-no">06</p>
+          <h3>Weave Docs</h3>
+          <p class="desc">Menulis docstring, README, dan catatan perubahan langsung dari kode yang sebenarnya.</p>
+          <p class="gain"><b>Manfaat</b>Dokumentasi selalu selaras dengan kode terbaru.</p>
+          <p class="where">Pro dan Team</p>
+        </article>
+        <article class="entry hero">
+          <p class="entry-no">07</p>
+          <h3>Mode Agen</h3>
+          <p class="desc">Untuk tugas besar: beberapa agen membagi pekerjaan, saling memeriksa, saling berkabar, mencatat jejak audit, dan bisa diurai ulang ke titik simpan mana pun.</p>
+          <p class="gain"><b>Manfaat</b>Fitur besar selesai lebih cepat, keputusan penting tetap di tanganmu.</p>
+          <p class="where">Pro 3 agen paralel · Team 10 agen paralel dan jejak audit untuk admin</p>
+        </article>
+      </div>
+    </div>
+    <div class="sheet-foot"><span>ScriptWeave · Katalog Produk 2026/2027</span><span>04 / 06</span></div>
+  </section>
+
+  <!-- 5. Product Specifications / Packages -->
+  <section class="sheet page packages" id="paket" aria-labelledby="paket-h">
+    <div class="sheet-in">
+      <div>
+        <p class="eyebrow">// paket dan spesifikasi</p>
+        <h2 id="paket-h">Harga jelas, dalam rupiah.</h2>
+      </div>
+      <div class="pkg-grid">
+        <article class="pkg">
+          <h3>Starter</h3>
+          <p class="for">Untuk belajar dan proyek pribadi.</p>
+          <p class="price"><span class="cur">Rp</span><span class="amt">0</span></p>
+          <p class="yearly">Gratis selamanya</p>
+          <ul class="ticks">
+            <li>2.000 saran kode per bulan</li>
+            <li>50 pesan Weave Chat per bulan</li>
+            <li>1 repo pribadi</li>
+            <li>Ekstensi VS Code</li>
+            <li>Dukungan lewat komunitas</li>
+          </ul>
+        </article>
+        <article class="pkg featured">
+          <p><span class="tag gold">Rekomendasi kami</span></p>
+          <h3>Pro</h3>
+          <p class="for">Untuk developer profesional dan freelancer.</p>
+          <p class="price"><span class="cur">Rp</span><span class="amt">150.000</span><span class="per">/bulan</span></p>
+          <p class="yearly">Tahunan Rp120.000/bulan, ditagih Rp1.440.000</p>
+          <ul class="ticks">
+            <li>Saran kode dan Weave Chat tanpa batas</li>
+            <li>Weave Review 100 pull request per bulan</li>
+            <li>Weave Fix, Test, dan Docs</li>
+            <li>Mode Agen dengan 3 agen paralel</li>
+            <li>Semua editor dan terminal, repo tanpa batas</li>
+            <li>Dukungan email, dibalas maksimal 1 hari kerja</li>
+          </ul>
+        </article>
+        <article class="pkg">
+          <h3>Team</h3>
+          <p class="for">Untuk startup dan tim engineering.</p>
+          <p class="price"><span class="cur">Rp</span><span class="amt">300.000</span><span class="per">/pengguna/bulan</span></p>
+          <p class="yearly">Tahunan Rp240.000/pengguna/bulan, ditagih Rp2.880.000</p>
+          <ul class="ticks">
+            <li>Semua fitur Pro</li>
+            <li>Weave Review tanpa batas</li>
+            <li>Mode Agen dengan 10 agen paralel dan jejak audit untuk admin</li>
+            <li>Aturan tim dan dasbor admin</li>
+            <li>SSO Google Workspace dan Microsoft</li>
+            <li>Dukungan prioritas, dibalas maksimal 4 jam kerja</li>
+          </ul>
+        </article>
+      </div>
+      <div class="specs">
+        <div class="table-wrap">
+          <table>
+            <tbody>
+              <tr><th scope="row">Editor</th><td>VS Code, JetBrains IDE, Neovim, CLI terminal</td></tr>
+              <tr><th scope="row">Bahasa kode</th><td>TypeScript, JavaScript, Python, Go, Java, Kotlin, PHP, Dart, Rust</td></tr>
+              <tr><th scope="row">Bahasa prompt</th><td>Indonesia, Inggris, atau campuran</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <tbody>
+              <tr><th scope="row">Keamanan</th><td>Enkripsi saat dikirim dan disimpan; kode tidak dipakai melatih model</td></tr>
+              <tr><th scope="row">Pembayaran</th><td>QRIS, transfer bank, kartu kredit, e-wallet; belum termasuk PPN</td></tr>
+              <tr><th scope="row">Pemasangan khusus</th><td>Cloud pribadi atau server perusahaan, lewat tim sales</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="sheet-foot"><span>ScriptWeave · Katalog Produk 2026/2027</span><span>05 / 06</span></div>
+  </section>
+
+  <!-- 6. CTA -->
+  <section class="sheet page cta" id="mulai" aria-labelledby="mulai-h">
+    <div class="sheet-in">
+      <div class="cta-copy">
+        <p class="eyebrow">// mulai sekarang</p>
+        <h2 id="mulai-h">Pasang dalam 2 menit.</h2>
+        <ol class="start">
+          <li>Cari “ScriptWeave” di marketplace editor kamu.</li>
+          <li>Masuk dengan akun GitHub atau Google, lalu hubungkan repo.</li>
+          <li>Tekan Tab untuk saran pertama, atau Ctrl + I untuk Weave Chat.</li>
+        </ol>
+        <div class="coupon">
+          <code>TENUN30</code>
+          <span>Uji coba Pro 14 hari jadi 30 hari, tanpa kartu kredit. Berlaku sampai 31 Januari 2027.</span>
+        </div>
+        <p><a class="btn" href="index.html#kontak">Mulai gratis di scriptweave.id</a></p>
+      </div>
+      <div class="cta-side">
+        <img src="assets/cloth.webp" alt="Kain tenun berisi baris kode berwarna dengan jahitan pinggir kuning" width="1100" height="1097">
+        <p><span class="tag line">Mahasiswa</span> Diskon 50% paket Pro, jadi Rp75.000/bulan dengan email kampus .ac.id.</p>
+        <dl class="contact">
+          <div><dt>Email</dt><dd>halo@scriptweave.id</dd></div>
+          <div><dt>Kantor</dt><dd>Jakarta Selatan, Indonesia</dd></div>
+          <div><dt>Jam layanan</dt><dd>Senin sampai Jumat, 09.00–18.00 WIB</dd></div>
+        </dl>
+      </div>
+    </div>
+    <div class="seam" aria-hidden="true"></div>
+    <div class="sheet-foot"><span>ScriptWeave adalah brand fiktif untuk proyek Creative Communication.</span><span>06 / 06</span></div>
+  </section>
+
+</main>
+</body>
+</html>
