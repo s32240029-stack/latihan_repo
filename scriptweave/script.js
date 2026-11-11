@@ -123,7 +123,14 @@
   if (nav) nav.addEventListener('click', function (e) { if (e.target.closest('a')) setNav(false); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setNav(false); });
 
-  function onScroll() { if (header) header.classList.toggle('is-scrolled', window.scrollY > 8); }
+  var progressBar = $('.read-progress span');
+  function onScroll() {
+    if (header) header.classList.toggle('is-scrolled', window.scrollY > 8);
+    if (progressBar) {
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      progressBar.style.transform = 'scaleX(' + (max > 0 ? Math.min(1, window.scrollY / max) : 0).toFixed(4) + ')';
+    }
+  }
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 
@@ -143,6 +150,65 @@
   }
 
   /* ---------- scroll reveal ---------- */
+
+  /* headings decode from scrambled characters, like code compiling into words */
+  var GLYPHS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<>/{}[]=+*#_';
+  function decodeText(el, duration) {
+    if (!el || reduceMotion.matches) return;
+    var nodes = [];
+    var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    var n;
+    while ((n = walker.nextNode())) nodes.push(n);
+    var jobs = nodes.map(function (node) {
+      if (!originals.has(node) && lang === 'id') originals.set(node, node.nodeValue);
+      var target = node.nodeValue;
+      return { node: node, target: target, order: target.split('').map(function () { return Math.random(); }) };
+    });
+    var run = (el.__decodeRun || 0) + 1;
+    el.__decodeRun = run;
+    var start = performance.now();
+    function step(now) {
+      if (el.__decodeRun !== run) return;
+      var p = Math.min(1, (now - start) / (duration || 700));
+      jobs.forEach(function (j) {
+        var out = '';
+        for (var i = 0; i < j.target.length; i++) {
+          var ch = j.target.charAt(i);
+          if (/\s|[.,?!:;'"’“”-]/.test(ch) || j.order[i] < p * 1.15 - 0.1) out += ch;
+          else out += GLYPHS.charAt(Math.floor(Math.random() * GLYPHS.length));
+        }
+        j.node.nodeValue = out;
+      });
+      if (p < 1) requestAnimationFrame(step);
+      else jobs.forEach(function (j) { translateNode(j.node); });
+    }
+    requestAnimationFrame(step);
+  }
+
+  /* things that animate once when they scroll into view */
+  if ('IntersectionObserver' in window) {
+    var onceSeen = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var el = entry.target;
+        onceSeen.unobserve(el);
+        if (el.matches('h2, .agent-title')) decodeText(el, 800);
+        else el.classList.add('in-view');
+      });
+    }, { threshold: 0.45 });
+    $$('main .section h2, .agent-title, .loom').forEach(function (el) { onceSeen.observe(el); });
+  } else {
+    $$('.loom').forEach(function (el) { el.classList.add('in-view'); });
+  }
+
+  /* a spotlight that follows the pointer across cards */
+  document.addEventListener('pointermove', function (e) {
+    var card = e.target && e.target.closest ? e.target.closest('.feature, .plan, .contact-panel, .note') : null;
+    if (!card) return;
+    var r = card.getBoundingClientRect();
+    card.style.setProperty('--mx', (e.clientX - r.left).toFixed(0) + 'px');
+    card.style.setProperty('--my', (e.clientY - r.top).toFixed(0) + 'px');
+  }, { passive: true });
 
   var revealEls = $$('.reveal');
   if ('IntersectionObserver' in window && !reduceMotion.matches) {
@@ -577,7 +643,9 @@
       var vis = fadeIn * fadeOut;
       el.style.opacity = vis.toFixed(3);
       el.style.setProperty('--dy', ((1 - fadeIn) * 46 - (1 - fadeOut) * 46).toFixed(1) + 'px');
-      el.classList.toggle('is-active', vis > 0.6);
+      var act = vis > 0.6;
+      if (act && !el.classList.contains('is-active')) decodeText(el.querySelector('h2'), 650);
+      el.classList.toggle('is-active', act);
     });
 
     /* file names ride the warp in chapter 1 */
@@ -605,6 +673,21 @@
      so the 3D scene and the 2D fallback share one layout. */
 
   var gl3 = null;
+
+  /* pointer position, -1..1, eased each frame; only for mouse and trackpad users */
+  var lean = { x: 0, y: 0, tx: 0, ty: 0 };
+  if (window.matchMedia('(pointer: fine)').matches) {
+    window.addEventListener('pointermove', function (e) {
+      lean.tx = e.clientX / window.innerWidth * 2 - 1;
+      lean.ty = e.clientY / window.innerHeight * 2 - 1;
+    }, { passive: true });
+  }
+  var introStart = 0;   /* set when the hero intro runs; 0 means no intro */
+  function easeOutBack(x) {
+    var c1 = 1.70158;
+    var c3 = c1 + 1;
+    return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
+  }
 
   function seeded(seed) {
     return function () {
@@ -971,11 +1054,18 @@
     var br = lerp(g.hero.r, g.rd, ballT) * (1 - 0.18 * smooth(0.3, 0.74, p));
     var rot = p * 9 + time * 0.00012;
     var gone = smooth(0.74, 0.86, p);
-    var sBall = br * k * (1 - gone);
+    if (!reduceMotion.matches) {
+      lean.x += (lean.tx - lean.x) * 0.06;
+      lean.y += (lean.ty - lean.y) * 0.06;
+    }
+    var intro = introStart && time ? clamp01((time - introStart - 250) / 1300) : 1;
+    var sBall = br * k * (1 - gone) * Math.max(0.0001, easeOutBack(intro));
     gl3.ball.visible = sBall > 0.002;
     gl3.ball.position.copy(P(bx, by, 0));
     gl3.ball.scale.setScalar(Math.max(sBall, 0.0001));
-    gl3.ball.rotation.set(0.4 + rot * 0.15, rot, 0.25);
+    gl3.ball.position.x += lean.x * br * k * 0.08;
+    gl3.ball.position.y -= lean.y * br * k * 0.06;
+    gl3.ball.rotation.set(0.4 + rot * 0.15 + lean.y * 0.35, rot + lean.x * 0.6 + (1 - intro) * 4, 0.25);
 
     /* loose thread hanging from the ball, pulled taut as it docks */
     var endY = lerp(H + 80, g.fanTop, smooth(0.06, 0.24, p));
@@ -1019,7 +1109,7 @@
     /* chapter 3: the cloth is cut, turned towards you and hemmed */
     L.cloth.position.copy(L.c);
     L.cloth.position.y += lift * k;
-    L.cloth.rotation.set(-0.14 * t3, (g.wide ? 0.3 : 0.18) * t3, -0.05 * t3);
+    L.cloth.rotation.set(-0.14 * t3 + lean.y * 0.1, (g.wide ? 0.3 : 0.18) * t3 + lean.x * 0.16, -0.05 * t3);
     L.cloth.scale.setScalar(1 + 0.1 * t3);
     L.hem.count = Math.floor(t3 * L.hemN);
     L.hem.visible = L.hem.count > 0;
@@ -1080,8 +1170,28 @@
     }
   }
 
+  /* hero intro: type the command, then the headline rises and the ball spins in */
+  function runIntro() {
+    if (reduceMotion.matches || !live || window.scrollY > 40) { introStart = 0; return; }
+    root.classList.add('intro-run');
+    var cmd = $('.prompt .cmd');
+    if (cmd) {
+      var full = cmd.textContent;
+      cmd.textContent = '';
+      var i = 0;
+      var typer = setInterval(function () {
+        i++;
+        cmd.textContent = full.slice(0, i);
+        if (i >= full.length) clearInterval(typer);
+      }, 38);
+    }
+    setTimeout(function () { root.classList.remove('intro-run'); }, 2200);
+  }
+
   if (story && stage && cv) {
     readColors();
+    /* the ball's spin-in is timed from here, so the very first frame already starts small */
+    if (!reduceMotion.matches && window.scrollY <= 40) introStart = performance.now();
     gl3 = init3d();
     if (gl3) {
       gl3.canvas.id = cv.id;
@@ -1098,6 +1208,7 @@
       storyResize = setTimeout(function () { setMode(); kick(); }, 100);
     });
     onChange(reduceMotion, setMode);
+    runIntro();
     function recolor() { readColors(); theme3d(); if (live) kick(); else render(0.97, 0); }
     onThemeChange = recolor;
     onChange(darkScheme, recolor);
