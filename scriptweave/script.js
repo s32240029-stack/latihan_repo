@@ -17,22 +17,94 @@
   function lerp(a, b, t) { return a + (b - a) * t; }
   function smooth(a, b, x) { var t = clamp01((x - a) / (b - a)); return t * t * (3 - 2 * t); }
 
-  /* ---------- theme ---------- */
+  /* ---------- language: Indonesian in the markup, English from window.SW_EN ---------- */
 
-  function currentTheme() {
-    var set = root.getAttribute('data-theme');
-    if (set === 'light' || set === 'dark') return set;
-    return darkScheme.matches ? 'dark' : 'light';
+  var EN = window.SW_EN || {};
+  var lang = 'id';
+  try { if (localStorage.getItem('sw-lang') === 'en') lang = 'en'; } catch (e) { /* default */ }
+
+  function t(str) { return lang === 'en' && EN[str] ? EN[str] : str; }
+
+  /* text an element shows that the script sets: remembered by its Indonesian key */
+  function setText(el, idStr) {
+    if (!el) return;
+    el.setAttribute('data-i18n-key', idStr);
+    el.textContent = t(idStr);
   }
 
+  var I18N_SKIP = 'script, style, code, kbd, svg, .code, .diff-lines, .diff-file, [data-no-i18n], [data-i18n-key]';
+  var I18N_ATTRS = ['aria-label', 'placeholder', 'alt', 'title'];
+  var originals = new WeakMap();
+
+  function translateNode(node) {
+    var orig = originals.get(node);
+    if (orig === undefined) { orig = node.nodeValue; originals.set(node, orig); }
+    var key = orig.replace(/\s+/g, ' ').trim();
+    if (!key) return;
+    if (lang === 'en' && EN[key]) {
+      var lead = orig.match(/^\s*/)[0];
+      var trail = orig.match(/\s*$/)[0];
+      if (/^[?.,;:!]/.test(EN[key])) lead = '';
+      node.nodeValue = lead + EN[key] + trail;
+    } else {
+      node.nodeValue = orig;
+    }
+  }
+
+  function applyLang(next) {
+    lang = next;
+    root.setAttribute('lang', lang);
+    document.title = t('ScriptWeave | Asisten Coding AI');
+    var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (n) { return n.parentElement && !n.parentElement.closest(I18N_SKIP) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT; }
+    });
+    var nodes = [];
+    var n;
+    while ((n = walker.nextNode())) nodes.push(n);
+    nodes.forEach(translateNode);
+    $$('[data-i18n-key]').forEach(function (el) { el.textContent = t(el.getAttribute('data-i18n-key')); });
+    I18N_ATTRS.forEach(function (attr) {
+      $$('[' + attr + ']').forEach(function (el) {
+        if (el.closest('svg, .code')) return;
+        var store = 'data-i18n-' + attr;
+        if (!el.hasAttribute(store)) el.setAttribute(store, el.getAttribute(attr));
+        el.setAttribute(attr, t(el.getAttribute(store)));
+      });
+    });
+    $$('.lang-switch [data-lang]').forEach(function (btn) {
+      btn.setAttribute('aria-pressed', String(btn.getAttribute('data-lang') === lang));
+    });
+    if (typeof onLangChange === 'function') onLangChange();
+    try { localStorage.setItem('sw-lang', lang); } catch (e) { /* not persisted */ }
+  }
+  var onLangChange = null;
+
+  $$('.lang-switch [data-lang]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      if (btn.getAttribute('data-lang') !== lang) applyLang(btn.getAttribute('data-lang'));
+    });
+  });
+
+  /* ---------- theme: light by default, dark on request ---------- */
+
+  function isDark() { return root.getAttribute('data-sw-theme') === 'dark'; }
   var themeBtn = $('#theme-toggle');
+  var onThemeChange = null;
+  function labelTheme() {
+    if (!themeBtn) return;
+    var key = isDark() ? 'Ganti ke mode terang' : 'Ganti ke mode gelap';
+    themeBtn.setAttribute('data-i18n-aria-label', key);
+    themeBtn.setAttribute('aria-label', t(key));
+  }
   if (themeBtn) {
     themeBtn.addEventListener('click', function () {
-      var next = currentTheme() === 'dark' ? 'light' : 'dark';
-      root.setAttribute('data-theme', next);
-      try { localStorage.setItem('sw-theme', next); } catch (e) { /* not persisted */ }
+      if (isDark()) root.removeAttribute('data-sw-theme'); else root.setAttribute('data-sw-theme', 'dark');
+      try { localStorage.setItem('sw-theme', isDark() ? 'dark' : 'light'); } catch (e) { /* not persisted */ }
+      labelTheme();
+      if (onThemeChange) onThemeChange();
     });
   }
+  labelTheme();
 
   /* ---------- header + mobile nav ---------- */
 
@@ -44,7 +116,8 @@
     if (!nav || !navBtn) return;
     nav.classList.toggle('is-open', open);
     navBtn.setAttribute('aria-expanded', String(open));
-    navBtn.setAttribute('aria-label', open ? 'Tutup menu' : 'Buka menu');
+    navBtn.setAttribute('data-i18n-aria-label', open ? 'Tutup menu' : 'Buka menu');
+    navBtn.setAttribute('aria-label', t(open ? 'Tutup menu' : 'Buka menu'));
   }
   if (navBtn) navBtn.addEventListener('click', function () { setNav(!nav.classList.contains('is-open')); });
   if (nav) nav.addEventListener('click', function (e) { if (e.target.closest('a')) setNav(false); });
@@ -156,21 +229,48 @@
     g.fringe = g.s * 0.05;
     g.tw = Math.max(1.5, g.s * 0.0075);       /* thread width */
 
-    /* the hero ball rests where the headline's two lines end, overlapping the last letters */
+    /* the hero ball sits in the open space the headline leaves: to its right on wide
+       screens, between the headline and the intro text on phones */
     var rh = wide ? Math.min(W * 0.125, H * 0.26) : W * 0.14;
     var hx = W * 0.72;
     var hy = H * 0.4;
+    var footEl = $('.hero-foot');
     if (anchorEl && anchorEl.offsetWidth) {
-      var lineEnd = anchorEl.offsetLeft + anchorEl.offsetWidth;
-      var next = anchorEl.nextElementSibling;
-      if (next && next.offsetWidth) lineEnd = Math.max(lineEnd, next.offsetLeft + next.offsetWidth);
-      hx = lineEnd + rh * (wide ? 0.8 : 0.42);
-      hy = anchorEl.offsetTop + anchorEl.offsetHeight * 0.98;
+      var lastLine = anchorEl.nextElementSibling || anchorEl;
+      var lineEnd = Math.max(anchorEl.offsetLeft + anchorEl.offsetWidth, lastLine.offsetLeft + lastLine.offsetWidth);
+      var titleTop = anchorEl.offsetTop;
+      var titleBottom = lastLine.offsetTop + lastLine.offsetHeight;
+      var footTop = footEl ? footEl.offsetTop : H * 0.75;
+      if (wide) {
+        var left = lineEnd + 40;
+        var right = W - 40;
+        rh = Math.max(40, Math.min(rh, (right - left) / 2));
+        hx = (left + right) / 2;
+        hy = (titleTop + footTop) / 2;
+      } else {
+        var gapTop = titleBottom + 16;
+        var gapBottom = footTop - 24;
+        var fit = (gapBottom - gapTop) / 2;
+        if (fit > W * 0.1) {
+          rh = Math.min(W * 0.22, fit * 0.78);
+          hx = W * 0.6;
+          hy = gapTop + fit - rh * 0.1;
+        } else {
+          hx = lineEnd + rh * 0.42;
+          hy = titleBottom;
+        }
+      }
     }
     g.hero = { x: Math.min(hx, W - rh - 8), y: hy, r: rh };
     /* where the loose thread leaves the stage */
-    g.tailX = wide ? g.hero.x - rh * 0.25 : W - 26;
+    g.tailX = wide ? g.hero.x - rh * 0.25 : W - 14;
     return g;
+  }
+
+  /* how far along its run the loose thread has drifted sideways: on phones it heads for
+     the right edge early, so it hangs beside the intro text instead of across it */
+  function tailEase(u, wide) {
+    return wide ? u * u * (3 - 2 * u) : smooth(0, 0.32, u);
   }
 
   function strokePartial(ctx, pts, f) {
@@ -321,7 +421,7 @@
       for (i = 0; i <= 48; i++) {
         var u = i / 48;
         var wob = Math.sin(u * 8.5 - time * 0.0014 - p * 60) * amp * Math.sin(Math.PI * Math.min(1, u * 1.15));
-        tail.push([lerp(bx, endX, u * u * (3 - 2 * u)) + wob, lerp(by, endY, u)]);
+        tail.push([lerp(bx, endX, tailEase(u, g.wide)) + wob, lerp(by, endY, u)]);
       }
       ctx.globalAlpha = loomAlpha;
       ctx.strokeStyle = C.yarn;
@@ -535,7 +635,8 @@
     var camera = new T.PerspectiveCamera(22, 1, 1, 200);
     camera.position.set(0, 0, 40);
 
-    scene.add(new T.HemisphereLight(0xf2f5ff, 0x6c7290, 0.6));
+    var hemi = new T.HemisphereLight(0xf2f5ff, 0x6c7290, 0.6);
+    scene.add(hemi);
     var key = new T.DirectionalLight(0xffffff, 0.85);
     key.position.set(-6, 9, 26);
     key.castShadow = true;
@@ -628,6 +729,7 @@
       return new T.Sprite(new T.SpriteMaterial({ map: haloTex, color: col(hex), transparent: true, opacity: opacity, depthWrite: false }));
     }
     var ballHalo = halo(C.yarn, 0.16);
+    ballHalo.userData.opacity = [0.16, 0.55];
     ballHalo.scale.set(3.4, 3.4, 1);
     ballHalo.position.z = -1.2;
     ball.add(ballHalo);
@@ -639,7 +741,8 @@
 
     return {
       T: T, canvas: canvas, renderer: renderer, scene: scene, camera: camera,
-      key: key, wall: wall, mats: mats, ball: ball, tail: tail, halo: halo, built: '', loom: null, k: 1
+      key: key, wall: wall, mats: mats, ball: ball, tail: tail, halo: halo, built: '', loom: null, k: 1,
+      hemi: hemi, rim: rim, rim2: rim2, core: core, strands: strands, ballHalo: ballHalo
     };
   }
 
@@ -816,12 +919,40 @@
     var clothHalo = gl3.halo(C.cyan || C.yarn, 0.07);
     clothHalo.scale.set(g.s * k * 1.9, g.clothH * k * 2.1, 1);
     clothHalo.position.z = -L.amp * 6;
+    clothHalo.userData.opacity = [0.07, 0.16];
     L.cloth.add(clothHalo);
+    L.clothHalo = clothHalo;
     L.hemN = marks.length;
 
     gl3.scene.add(L.fanGroup);
     gl3.scene.add(L.cloth);
     gl3.loom = L;
+    theme3d();
+  }
+
+  /* light: glossy thread with soft shadows; dark: the same thread glowing on a night screen */
+  function theme3d() {
+    if (!gl3) return;
+    var T = gl3.T;
+    var dark = isDark();
+    gl3.hemi.intensity = dark ? 0.4 : 0.6;
+    gl3.hemi.groundColor.set(dark ? 0x05060f : 0x6c7290);
+    gl3.key.intensity = dark ? 0.7 : 0.85;
+    gl3.rim.intensity = dark ? 1.1 : 0.55;
+    gl3.rim2.intensity = dark ? 0.7 : 0.35;
+    gl3.wall.visible = !dark;
+    Object.keys(gl3.mats).forEach(function (k) {
+      var m = gl3.mats[k];
+      if (k !== 'ink' && k !== 'gold') m.emissiveIntensity = dark ? 0.3 : 0.08;
+    });
+    gl3.strands.material.emissiveIntensity = dark ? 0.12 : 0.06;
+    gl3.core.material.emissiveIntensity = dark ? 0.4 : 0.1;
+    [gl3.ballHalo, gl3.loom && gl3.loom.clothHalo].forEach(function (h) {
+      if (!h) return;
+      h.material.blending = dark ? T.AdditiveBlending : T.NormalBlending;
+      h.material.opacity = h.userData.opacity[dark ? 1 : 0];
+      h.material.needsUpdate = true;
+    });
   }
 
   function draw3d(g, p, time, W, H, t1, t2, t3, ballT, lift) {
@@ -855,7 +986,7 @@
       var u = i / 40;
       var wob = Math.sin(u * 8.5 - time * 0.0014 - p * 60) * amp * Math.sin(Math.PI * Math.min(1, u * 1.15));
       var depth = Math.sin(u * 5 - time * 0.001) * amp * k * 0.6;
-      pts.push(P(lerp(bx, endX, u * u * (3 - 2 * u)) + wob, lerp(by, endY, u), depth));
+      pts.push(P(lerp(bx, endX, tailEase(u, g.wide)) + wob, lerp(by, endY, u), depth));
     }
     gl3.tail.geometry.dispose();
     gl3.tail.geometry = new T.TubeGeometry(new T.CatmullRomCurve3(pts), 120, L.rw * 1.25, 8, false);
@@ -967,7 +1098,8 @@
       storyResize = setTimeout(function () { setMode(); kick(); }, 100);
     });
     onChange(reduceMotion, setMode);
-    function recolor() { readColors(); if (live) kick(); else render(0.97, 0); }
+    function recolor() { readColors(); theme3d(); if (live) kick(); else render(0.97, 0); }
+    onThemeChange = recolor;
     onChange(darkScheme, recolor);
     if ('MutationObserver' in window) {
       new MutationObserver(recolor).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
@@ -1006,7 +1138,7 @@
       line.classList.remove('is-ghost', 'is-hidden', 'is-fresh', 'is-caret');
     });
     if (editorEl) editorEl.classList.remove('is-busy');
-    if (statusEl) statusEl.textContent = 'Diterima, 6 baris ditambahkan';
+    setText(statusEl, 'Diterima, 6 baris ditambahkan');
   }
 
   function playDemo() {
@@ -1027,7 +1159,7 @@
     nodes.forEach(function (n) { n.nodeValue = ''; });
     promptLine.classList.add('is-caret');
     if (editorEl) editorEl.classList.add('is-busy');
-    if (statusEl) statusEl.textContent = 'Kamu mengetik komentar';
+    setText(statusEl, 'Kamu mengetik komentar');
 
     (async function () {
       await wait(500);
@@ -1040,7 +1172,7 @@
       }
       if (stale()) { restorePrompt(); return; }
       promptLine.classList.remove('is-caret');
-      if (statusEl) statusEl.textContent = 'Menenun saran dari 3 file konteks';
+      setText(statusEl, 'Menenun saran dari 3 file konteks');
       await wait(650);
 
       for (var i = 0; i < suggestLines.length; i++) {
@@ -1050,13 +1182,13 @@
         await wait(130);
       }
       if (stale()) return;
-      if (statusEl) statusEl.textContent = 'Saran siap, tekan Tab untuk terima';
+      setText(statusEl, 'Saran siap, tekan Tab untuk terima');
       await wait(1100);
 
       if (stale()) return;
       suggestLines.forEach(function (l) { l.classList.remove('is-ghost'); l.classList.add('is-fresh'); });
       if (editorEl) editorEl.classList.remove('is-busy');
-      if (statusEl) statusEl.textContent = 'Diterima, 6 baris ditambahkan';
+      setText(statusEl, 'Diterima, 6 baris ditambahkan');
       await wait(1200);
 
       if (stale()) return;
@@ -1132,16 +1264,32 @@
       b.classList.toggle('is-on', on);
       b.setAttribute('aria-pressed', String(on));
     });
+    billMode = mode;
     $$('.plans [data-' + mode + ']').forEach(function (el) {
-      el.textContent = el.getAttribute('data-' + mode);
+      if (el.classList.contains('amt')) el.textContent = el.getAttribute('data-' + mode);
+      else setText(el, el.getAttribute('data-' + mode));
     });
   }
+  var billMode = 'monthly';
   billButtons.forEach(function (b) {
     b.addEventListener('click', function () { setBilling(b.getAttribute('data-bill')); });
   });
 
-  /* a plan button carries its choice into the contact form */
+  /* the highlight follows the plan you click or tab into */
+  var planCards = $$('[data-plan-card]');
   var planSelect = $('#f-paket');
+  function selectPlan(card) {
+    planCards.forEach(function (c) { c.classList.toggle('is-selected', c === card); });
+  }
+  planCards.forEach(function (card) {
+    card.addEventListener('click', function () {
+      selectPlan(card);
+      if (planSelect) planSelect.value = card.getAttribute('data-plan-card');
+    });
+    card.addEventListener('focusin', function () { selectPlan(card); });
+  });
+
+  /* a plan button carries its choice into the contact form */
   $$('[data-plan]').forEach(function (el) {
     el.addEventListener('click', function () {
       if (planSelect) planSelect.value = el.getAttribute('data-plan');
@@ -1154,10 +1302,9 @@
     btn.addEventListener('click', function () {
       var source = document.getElementById(btn.getAttribute('data-copy'));
       if (!source) return;
-      var label = btn.textContent;
-      function done(text) {
-        btn.textContent = text;
-        setTimeout(function () { btn.textContent = label; }, 1600);
+      function done(key) {
+        setText(btn, key);
+        setTimeout(function () { setText(btn, 'Salin'); }, 1600);
       }
       function selectInstead() {
         var range = document.createRange();
@@ -1217,4 +1364,6 @@
       nama.focus();
     });
   }
+  onLangChange = function () { setBilling(billMode); };
+  if (lang === 'en') applyLang('en');
 })();

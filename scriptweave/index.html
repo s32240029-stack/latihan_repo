@@ -10,7 +10,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400..700&family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:ital,wght@0,400..700;1,400..700&display=swap">
 <script>
-  document.documentElement.classList.add('js');
+  (function () {
+    var r = document.documentElement;
+    r.classList.add('js');
+    try { if (localStorage.getItem('sw-theme') === 'dark') r.setAttribute('data-sw-theme', 'dark'); } catch (e) { /* storage unavailable */ }
+  })();
 </script>
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -42,6 +46,14 @@
     </nav>
 
     <div class="header-actions">
+      <div class="lang-switch" role="group" aria-label="Pilih bahasa">
+        <button type="button" data-lang="id" aria-pressed="true">ID</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </div>
+      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Ganti ke mode gelap">
+        <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.2A8.2 8.2 0 0 1 9.8 4a8.2 8.2 0 1 0 10.2 10.2z"/></svg>
+      </button>
       <a class="btn btn-primary btn-sm header-cta" href="#kontak" data-plan="Starter">Mulai Gratis</a>
       <button class="icon-btn nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Buka menu">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
@@ -387,12 +399,10 @@
   <!-- d. PRICING / PACKAGES -->
   <section class="section" id="harga">
     <div class="wrap">
-      <div class="section-head section-head-row reveal">
-        <div>
-          <p class="eyebrow">// harga</p>
-          <h2>Harga jelas, dalam rupiah.</h2>
-          <p class="section-sub">Mulai gratis, naik paket saat kamu butuh, berhenti kapan saja.</p>
-        </div>
+      <div class="section-head section-head-center reveal">
+        <p class="eyebrow">// harga</p>
+        <h2>Harga jelas, dalam rupiah.</h2>
+        <p class="section-sub">Mulai gratis, naik paket saat kamu butuh, berhenti kapan saja.</p>
         <div class="bill-toggle" role="group" aria-label="Periode tagihan">
           <button type="button" class="is-on" data-bill="monthly" aria-pressed="true">Bulanan</button>
           <button type="button" data-bill="yearly" aria-pressed="false">Tahunan <span class="save">hemat 20%</span></button>
@@ -400,7 +410,7 @@
       </div>
 
       <div class="plans">
-        <article class="plan reveal">
+        <article class="plan reveal" data-plan-card="Starter">
           <h3>Starter</h3>
           <p class="plan-for">Untuk belajar dan proyek pribadi.</p>
           <p class="price"><span class="cur">Rp</span><span class="amt">0</span></p>
@@ -415,7 +425,7 @@
           </ul>
         </article>
 
-        <article class="plan plan-featured reveal">
+        <article class="plan plan-featured is-selected reveal" data-plan-card="Pro">
           <p class="plan-flag">Rekomendasi kami</p>
           <h3>Pro</h3>
           <p class="plan-for">Untuk developer profesional dan freelancer.</p>
@@ -434,7 +444,7 @@
           </ul>
         </article>
 
-        <article class="plan reveal">
+        <article class="plan reveal" data-plan-card="Team">
           <h3>Team</h3>
           <p class="plan-for">Untuk startup dan tim engineering.</p>
           <p class="price"><span class="cur">Rp</span><span class="amt" data-monthly="300.000" data-yearly="240.000">300.000</span><span class="per">/pengguna/bulan</span></p>
@@ -575,8 +585,8 @@
         </form>
 
         <div class="form-done" id="form-done" hidden tabindex="-1">
-          <p class="form-done-title">Terima kasih, <span id="done-nama">teman</span>.</p>
-          <p>Permintaan paket <strong id="done-paket">Starter</strong> kamu sudah kami catat. Tautan pemasangan akan dikirim ke <strong id="done-email">emailmu</strong>.</p>
+          <p class="form-done-title">Terima kasih, <span id="done-nama" data-no-i18n>teman</span>.</p>
+          <p>Permintaan paket <strong id="done-paket" data-no-i18n>Starter</strong> kamu sudah kami catat. Tautan pemasangan akan dikirim ke <strong id="done-email" data-no-i18n>emailmu</strong>.</p>
           <p class="form-done-demo">Catatan: ini situs demo, formulir belum terhubung ke server sehingga belum ada email yang benar-benar terkirim.</p>
           <button class="btn btn-ghost" type="button" id="form-again">Kirim pesan lain</button>
         </div>
@@ -625,6 +635,7 @@
 </footer>
 
 <script src="vendor/three.min.js"></script>
+<script src="i18n.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
