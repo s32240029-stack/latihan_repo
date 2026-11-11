@@ -785,6 +785,61 @@
     };
   }
 
+  /* a plied yarn: three twisted strands with fine fibres, used as colour and bump.
+     x runs along the thread, y around it; one tile is about one twist. */
+  function yarnTexture(T) {
+    var c = document.createElement('canvas');
+    c.width = 256;
+    c.height = 128;
+    var x = c.getContext('2d');
+    x.fillStyle = '#7a7a7a';
+    x.fillRect(0, 0, 256, 128);
+    var plies = 3;
+    for (var rep = -1; rep <= 1; rep++) {
+      for (var pI = 0; pI < plies; pI++) {
+        var off = rep * 256 + pI * (256 / plies);
+        /* each ply is a slanted band, bright in the middle, dark where it meets the next */
+        var g = x.createLinearGradient(off, 0, off + 256 / plies, 0);
+        g.addColorStop(0, '#6a6a6a');
+        g.addColorStop(0.5, '#ffffff');
+        g.addColorStop(1, '#6a6a6a');
+        x.fillStyle = g;
+        x.beginPath();
+        x.moveTo(off, 0);
+        x.lineTo(off + 256 / plies, 0);
+        x.lineTo(off + 256 / plies + 256, 128);
+        x.lineTo(off + 256, 128);
+        x.closePath();
+        x.fill();
+      }
+    }
+    /* fibres: short strokes that follow the twist */
+    var r = seeded(11);
+    x.lineWidth = 1;
+    for (var f = 0; f < 900; f++) {
+      var fx = r() * 256;
+      var fy = r() * 128;
+      var len = 6 + r() * 14;
+      x.strokeStyle = r() < 0.5 ? 'rgba(255,255,255,.35)' : 'rgba(40,40,40,.22)';
+      x.beginPath();
+      x.moveTo(fx, fy);
+      x.lineTo(fx + len * 0.9, fy + len * 0.45);
+      x.stroke();
+    }
+    var tex = new T.CanvasTexture(c);
+    tex.wrapS = tex.wrapT = T.RepeatWrapping;
+    tex.anisotropy = 4;
+    return tex;
+  }
+
+  /* stretch a tube's texture so the twist keeps the same pitch whatever its length */
+  function twistUV(geo, length, radius) {
+    var uv = geo.attributes.uv;
+    var k = length / (Math.PI * 2 * radius * 1.15);
+    for (var i = 0; i < uv.count; i++) uv.setX(i, uv.getX(i) * k);
+    uv.needsUpdate = true;
+  }
+
   function init3d() {
     var T = window.THREE;
     if (!T || !cv || !cv.parentNode) return null;
@@ -805,9 +860,33 @@
     var camera = new T.PerspectiveCamera(22, 1, 1, 200);
     camera.position.set(0, 0, 40);
 
+    /* a soft studio around the scene: bright above, cool below, two softboxes */
+    try {
+      var pmrem = new T.PMREMGenerator(renderer);
+      var studio = new T.Scene();
+      var dome = new T.SphereGeometry(50, 32, 16);
+      var cols = [];
+      var dp = dome.attributes.position;
+      for (var e = 0; e < dp.count; e++) {
+        var up = (dp.getY(e) / 50 + 1) / 2;
+        var cc = new T.Color(0.36, 0.4, 0.58).lerp(new T.Color(1, 1, 1), up);
+        cols.push(cc.r, cc.g, cc.b);
+      }
+      dome.setAttribute('color', new T.Float32BufferAttribute(cols, 3));
+      studio.add(new T.Mesh(dome, new T.MeshBasicMaterial({ vertexColors: true, side: T.BackSide })));
+      [[-22, 16, 26, 0xffffff], [24, -6, 18, 0xbfe9ff]].forEach(function (sb) {
+        var box = new T.Mesh(new T.PlaneGeometry(26, 16), new T.MeshBasicMaterial({ color: sb[3], side: T.DoubleSide }));
+        box.position.set(sb[0], sb[1], sb[2]);
+        box.lookAt(0, 0, 0);
+        studio.add(box);
+      });
+      scene.environment = pmrem.fromScene(studio, 0.04).texture;
+      pmrem.dispose();
+    } catch (envErr) { /* lights alone still work */ }
+
     var hemi = new T.HemisphereLight(0xf2f5ff, 0x6c7290, 0.6);
     scene.add(hemi);
-    var key = new T.DirectionalLight(0xffffff, 0.85);
+    var key = new T.DirectionalLight(0xffffff, 0.7);
     key.position.set(-6, 9, 26);
     key.castShadow = true;
     key.shadow.mapSize.set(1536, 1536);
@@ -828,17 +907,32 @@
     scene.add(wall);
 
     function col(hex) { return new T.Color(hex).convertSRGBToLinear(); }
-    /* glossy synthetic thread, lit like a product shot */
-    function wool(hex, rough) { return new T.MeshStandardMaterial({ color: col(hex), roughness: rough || 0.36, metalness: 0.15, emissive: col(hex), emissiveIntensity: 0.08 }); }
+    /* real yarn: matte, plied and twisted, with the soft sheen of fabric */
+    var yarnTex = yarnTexture(T);
+    function wool(hex, rough) {
+      var m = new T.MeshPhysicalMaterial({
+        color: col(hex),
+        map: yarnTex,
+        bumpMap: yarnTex,
+        bumpScale: 0.035,
+        roughness: rough || 0.68,
+        metalness: 0,
+        emissive: col(hex),
+        emissiveIntensity: 0.08
+      });
+      m.sheen = new T.Color(0.55, 0.6, 0.85);
+      return m;
+    }
     var yarnLight = col(C.yarnHi).lerp(col(C.yarn), 0.45);
     var mats = {
       warp: wool(C.yarn),
       kw: wool(C.kw, 0.7),
       str: wool(C.str, 0.74),
       fn: wool(C.fn, 0.76),
-      plain: new T.MeshStandardMaterial({ color: yarnLight, roughness: 0.36, metalness: 0.15, emissive: yarnLight, emissiveIntensity: 0.08 }),
-      ink: new T.MeshStandardMaterial({ color: col(C.fg), roughness: 0.35, metalness: 0.1 }),
-      gold: new T.MeshStandardMaterial({ color: col(C.kw), roughness: 0.32, metalness: 0.35 })
+      plain: wool('#' + yarnLight.clone().convertLinearToSRGB().getHexString()),
+      ink: new T.MeshPhysicalMaterial({ color: col('#3a2414'), roughness: 0.42, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.3 }),
+      gold: new T.MeshStandardMaterial({ color: col('#d8c08a'), roughness: 0.28, metalness: 0.85 }),
+      wood: new T.MeshPhysicalMaterial({ color: col('#6b4429'), roughness: 0.5, metalness: 0, clearcoat: 0.4, clearcoatRoughness: 0.4 })
     };
 
     /* the yarn ball: bands of parallel strands wound in different directions over a core */
@@ -848,7 +942,11 @@
     ball.add(core);
     var BUNDLES = 16;
     var PER = 15;
-    var strands = new T.InstancedMesh(new T.TorusGeometry(1, 0.03, 6, 140), new T.MeshStandardMaterial({ color: 0xffffff, roughness: 0.32, metalness: 0.2, emissive: col(C.yarn), emissiveIntensity: 0.06 }), BUNDLES * PER);
+    var strandGeo = new T.TorusGeometry(1, 0.032, 8, 180);
+    twistUV(strandGeo, Math.PI * 2, 0.032);
+    var strandMat = new T.MeshPhysicalMaterial({ color: 0xffffff, map: yarnTex, bumpMap: yarnTex, bumpScale: 0.03, roughness: 0.7, metalness: 0, emissive: col(C.yarn), emissiveIntensity: 0.06 });
+    strandMat.sheen = new T.Color(0.5, 0.56, 0.85);
+    var strands = new T.InstancedMesh(strandGeo, strandMat, BUNDLES * PER);
     strands.castShadow = true;
     strands.receiveShadow = true;
     var rnd = seeded(7);
@@ -883,6 +981,21 @@
     strands.instanceMatrix.needsUpdate = true;
     if (strands.instanceColor) strands.instanceColor.needsUpdate = true;
     ball.add(strands);
+
+    /* fuzz: short fibres standing off the surface, as on a real ball of wool */
+    var fz = [];
+    var fr = seeded(23);
+    for (var h = 0; h < 1400; h++) {
+      var d = new T.Vector3(fr() * 2 - 1, fr() * 2 - 1, fr() * 2 - 1).normalize();
+      var r0 = 1.0 + fr() * 0.02;
+      var tip = d.clone().multiplyScalar(r0 + 0.02 + fr() * 0.06)
+        .add(new T.Vector3(fr() - 0.5, fr() - 0.5, fr() - 0.5).multiplyScalar(0.06));
+      fz.push(d.x * r0, d.y * r0, d.z * r0, tip.x, tip.y, tip.z);
+    }
+    var fuzzGeo = new T.BufferGeometry();
+    fuzzGeo.setAttribute('position', new T.Float32BufferAttribute(fz, 3));
+    var fuzz = new T.LineSegments(fuzzGeo, new T.LineBasicMaterial({ color: col(C.yarnHi), transparent: true, opacity: 0.45 }));
+    ball.add(fuzz);
 
     /* a soft halo behind the ball, so it reads as lit from within */
     var hc = document.createElement('canvas');
@@ -923,12 +1036,14 @@
   function tubeOf(pts, r, mat, parent) {
     var T = gl3.T;
     var segs = Math.max(10, pts.length * 3);
-    var geo = new T.TubeGeometry(new T.CatmullRomCurve3(pts), segs, r, 8, false);
+    var curve = new T.CatmullRomCurve3(pts);
+    var geo = new T.TubeGeometry(curve, segs, r, 10, false);
+    twistUV(geo, curve.getLength(), r);
     var mesh = new T.Mesh(geo, mat);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     parent.add(mesh);
-    return { mesh: mesh, segs: segs, rad: 8 };
+    return { mesh: mesh, segs: segs, rad: 10 };
   }
 
   /* show only the part of a tube between two fractions of its length */
@@ -947,7 +1062,9 @@
     gl3.k = k;
     cam.aspect = W / H;
     cam.updateProjectionMatrix();
-    gl3.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+    /* touch devices get a lighter render so scrolling stays smooth */
+    var coarse = window.matchMedia('(pointer: coarse)').matches;
+    gl3.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, coarse ? 1.25 : 1.75));
     gl3.renderer.setSize(W, H, false);
 
     var hw = W * k * 0.65;
@@ -1016,6 +1133,7 @@
           wp.push(P(xx, yRow, amp * Math.cos(Math.PI * (u + kk))).sub(c));
         }
         var t = tubeOf(wp, rf, gl3.mats[seg[2]], L.cloth);
+        t.mesh.scale.z = 0.78;
         t.row = kk; t.c0 = seg[0]; t.c1 = seg[1]; t.y = yRow;
         L.wefts.push(t);
       }
@@ -1023,16 +1141,40 @@
 
     /* the shuttle that carries the weft */
     var shuttle = new T.Group();
-    var body = new T.Mesh(new T.SphereGeometry(1, 28, 18), gl3.mats.ink);
-    body.scale.set(g.cw * 0.95 * k, rf * 1.55, rf * 1.55);
+    var body = new T.Mesh(new T.SphereGeometry(1, 32, 18), gl3.mats.wood);
+    body.scale.set(g.cw * 1.1 * k, rf * 1.5, rf * 1.7);
     body.castShadow = true;
-    var bobbin = new T.Mesh(new T.CylinderGeometry(rf * 0.7, rf * 0.7, g.cw * 0.8 * k, 18), gl3.mats.gold);
+    var bobbin = new T.Mesh(new T.CylinderGeometry(rf * 0.62, rf * 0.62, g.cw * 0.9 * k, 18), gl3.mats.kw);
     bobbin.rotation.z = Math.PI / 2;
-    bobbin.position.z = rf * 0.9;
+    bobbin.position.z = rf * 0.95;
     shuttle.add(body);
     shuttle.add(bobbin);
     L.cloth.add(shuttle);
     L.shuttle = shuttle;
+
+    /* the reed: a comb of dents between the warps, framed by two rails, that beats each pick home */
+    var reed = new T.Group();
+    var spanW = (g.s + g.cw * 0.8) * k;
+    var railGeo = new T.CylinderGeometry(rw * 1.6, rw * 1.6, spanW, 12);
+    var rail1 = new T.Mesh(railGeo, gl3.mats.wood);
+    var rail2 = new T.Mesh(railGeo, gl3.mats.wood);
+    rail1.rotation.z = rail2.rotation.z = Math.PI / 2;
+    var reedH = g.pitch * 1.25 * k;
+    rail1.position.y = reedH / 2;
+    rail2.position.y = -reedH / 2;
+    reed.add(rail1);
+    reed.add(rail2);
+    var dents = new T.InstancedMesh(new T.BoxGeometry(rw * 0.7, reedH, rw * 2.2), gl3.mats.gold, COLS + 1);
+    var dm = new T.Matrix4();
+    for (i = 0; i <= COLS; i++) {
+      dm.makeTranslation((g.clothLeft + i * g.cw - g.vx) * k, 0, 0);
+      dents.setMatrixAt(i, dm);
+    }
+    dents.instanceMatrix.needsUpdate = true;
+    reed.add(dents);
+    reed.traverse(function (o) { if (o.isMesh) o.castShadow = true; });
+    L.cloth.add(reed);
+    L.reed = reed;
 
     /* running-stitch hem around the finished cloth */
     var pad = g.s * 0.085;
@@ -1105,15 +1247,15 @@
     if (!gl3) return;
     var T = gl3.T;
     var dark = isDark();
-    gl3.hemi.intensity = dark ? 0.4 : 0.6;
+    gl3.hemi.intensity = dark ? 0.25 : 0.32;
     gl3.hemi.groundColor.set(dark ? 0x05060f : 0x6c7290);
-    gl3.key.intensity = dark ? 0.7 : 0.85;
+    gl3.key.intensity = dark ? 0.55 : 0.7;
     gl3.rim.intensity = dark ? 1.1 : 0.55;
     gl3.rim2.intensity = dark ? 0.7 : 0.35;
     gl3.wall.visible = !dark;
     Object.keys(gl3.mats).forEach(function (k) {
       var m = gl3.mats[k];
-      if (k !== 'ink' && k !== 'gold') m.emissiveIntensity = dark ? 0.3 : 0.08;
+      if (k !== 'ink' && k !== 'gold' && k !== 'wood') m.emissiveIntensity = dark ? 0.3 : 0.08;
     });
     gl3.strands.material.emissiveIntensity = dark ? 0.12 : 0.06;
     gl3.core.material.emissiveIntensity = dark ? 0.4 : 0.1;
@@ -1139,7 +1281,13 @@
     var bx = lerp(g.hero.x, g.dock.x, ballT);
     var by = lerp(g.hero.y, g.dock.y, ballT) + bob;
     var br = lerp(g.hero.r, g.rd, ballT) * (1 - 0.18 * smooth(0.3, 0.74, p));
-    var rot = p * 9 + time * 0.00012;
+    /* the ball spins faster while thread is being pulled off it */
+    var dt = gl3.lastTime && time ? Math.min(64, time - gl3.lastTime) : 16;
+    gl3.lastTime = time;
+    var pulling = (t1 > 0 && t1 < 1) || (t2 > 0 && t2 < 1) ? 1 : 0;
+    gl3.spinV = (gl3.spinV || 0) + ((0.12 + 1.1 * pulling) - (gl3.spinV || 0)) * 0.05;
+    gl3.spin = (gl3.spin || 0) + (reduceMotion.matches ? 0 : gl3.spinV * dt * 0.001);
+    var rot = p * 9 + gl3.spin;
     var gone = smooth(0.74, 0.86, p);
     if (!reduceMotion.matches) {
       lean.x += (lean.tx - lean.x) * 0.06;
@@ -1166,9 +1314,25 @@
       pts.push(P(lerp(bx, endX, tailEase(u, g.wide)) + wob, lerp(by, endY, u), depth));
     }
     gl3.tail.geometry.dispose();
-    gl3.tail.geometry = new T.TubeGeometry(new T.CatmullRomCurve3(pts), 120, L.rw * 1.25, 8, false);
+    var tailCurve = new T.CatmullRomCurve3(pts);
+    gl3.tail.geometry = new T.TubeGeometry(tailCurve, 120, L.rw * 1.25, 8, false);
+    twistUV(gl3.tail.geometry, tailCurve.getLength(), L.rw * 1.25);
     gl3.tail.visible = gone < 0.98;
     if (gone > 0) gl3.tail.geometry.setDrawRange(Math.floor(gone * 120) * 8 * 6, Infinity);
+
+    /* weaving state: which pick is being thrown, and how far */
+    var rowsN = CODE_ROWS.length;
+    var pick = -1;
+    var pickP = 0;
+    for (var r = 0; r < rowsN; r++) {
+      var rpr = clamp01(t2 * (rowsN + 0.6) - r);
+      if (rpr > 0 && rpr < 1) { pick = r; pickP = rpr; }
+    }
+    var still = reduceMotion.matches ? 0 : 1;
+    /* the shed: alternate warps part front and back while the shuttle crosses, then close */
+    var shed = pick >= 0 ? Math.sin(Math.PI * Math.min(1, pickP / 0.85)) * L.rf * 1.1 * still : 0;
+    /* until weaving starts, warps hang loose and sway a little */
+    var sway = (1 - smooth(0.44, 0.5, p)) * still;
 
     /* fan and warp */
     for (i = 0; i < COLS; i++) {
@@ -1176,10 +1340,12 @@
       var f = clamp01(t1 * 1.45 - spread * 0.9);
       reveal(L.fans[i], gone, f / 0.38);
       reveal(L.warps[i], 0, (f - 0.38) / 0.62);
+      var side = ((i + Math.max(pick, 0)) % 2 === 0) ? 1 : -1;
+      L.warps[i].mesh.position.z = side * shed;
+      L.warps[i].mesh.position.x = Math.sin(time * 0.0016 + i * 0.9) * L.rw * 1.4 * sway;
     }
 
     /* weft rows: each row is thrown a little after the one above it */
-    var rowsN = CODE_ROWS.length;
     var head = null;
     L.wefts.forEach(function (w) {
       var rp = clamp01(t2 * (rowsN + 0.6) - w.row);
@@ -1191,7 +1357,23 @@
       }
     });
     L.shuttle.visible = !!head;
-    if (head) L.shuttle.position.copy(P(head.x + g.cw * 0.45, head.y, L.amp + L.rf * 0.6).sub(L.c));
+    if (head) {
+      /* the shuttle flies through the open shed, rocking a little */
+      L.shuttle.position.copy(P(head.x + g.cw * 0.55, head.y, 0).sub(L.c));
+      L.shuttle.rotation.set(0, Math.sin(time * 0.012) * 0.08 * still, Math.sin(time * 0.009) * 0.05 * still);
+    }
+
+    /* the reed waits below the fell, then beats the new pick up into place */
+    var weaving = t2 > 0 && t2 < 1;
+    L.reed.visible = weaving || (t2 >= 1 && t3 < 0.05);
+    if (L.reed.visible) {
+      var fellRow = pick >= 0 ? pick : Math.min(rowsN - 1, Math.floor(t2 * (rowsN + 0.6)));
+      var fellY = g.clothTop + (fellRow + 0.5) * g.pitch;
+      var beat = pick >= 0 ? smooth(0.8, 0.97, pickP) : 1;
+      var back = g.pitch * (0.62 + 0.9 * (1 - beat));
+      L.reed.position.copy(P(g.vx, fellY + back, 0).sub(L.c));
+      L.reed.scale.setScalar(Math.max(0.0001, smooth(0, 0.04, t2) * (1 - smooth(0.0, 0.05, t3))));
+    }
 
     /* chapter 3: the cloth is cut, turned towards you and hemmed */
     L.cloth.position.copy(L.c);
