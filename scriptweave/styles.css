@@ -1397,3 +1397,45 @@ h2 { line-height: .98; }
 .plan:not(.is-selected) .btn-primary:hover { border-color: var(--yarn); color: var(--yarn); }
 @media (prefers-reduced-motion: reduce) { .plan.is-selected { transform: none; } }
 
+/* ---------- cloth card: the words sit on a plain label, the weave shows around it ---------- */
+.loom-cloth { place-items: center start; }
+.cloth-label {
+  display: grid;
+  gap: 6px;
+  padding: 16px 20px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg-raised);
+  box-shadow: 0 12px 30px -18px rgba(20, 30, 90, .45);
+}
+.cloth-label strong { color: var(--fg); }
+.cloth-label small { color: var(--muted); }
+
+/* ---------- billing switch: a thumb slides to the chosen period ---------- */
+.bill-toggle { position: relative; isolation: isolate; }
+.bill-toggle button, .bill-toggle button.is-on { position: relative; z-index: 1; background: transparent; transition: color .3s ease; }
+.bill-toggle button.is-on { color: #fff; }
+.bill-toggle button.is-on .save { color: #d6fff0; }
+.bill-thumb {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 0;
+  width: 0;
+  border-radius: 999px;
+  background: var(--yarn);
+  box-shadow: 0 8px 20px -8px rgba(79, 91, 255, .8);
+  transition: transform .45s cubic-bezier(.65, 0, .25, 1), width .45s cubic-bezier(.65, 0, .25, 1);
+  z-index: 0;
+}
+.bill-toggle:not(.has-thumb) button.is-on { background: var(--yarn); }
+.amt.is-changing { animation: price-swap .45s cubic-bezier(.2, .7, .2, 1); }
+@keyframes price-swap {
+  0% { opacity: 0; transform: translateY(10px); filter: blur(3px); }
+  100% { opacity: 1; transform: none; filter: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bill-thumb { transition: none; }
+  .amt.is-changing { animation: none; }
+}
+

@@ -1258,7 +1258,27 @@
   /* ---------- pricing ---------- */
 
   var billButtons = $$('.bill-toggle button');
+  var billToggle = $('.bill-toggle');
+  var billThumb = $('.bill-thumb');
+
+  /* the thumb slides under whichever period is chosen */
+  function placeThumb() {
+    if (!billThumb || !billToggle) return;
+    var on = $('.bill-toggle button.is-on');
+    if (!on || !on.offsetWidth) return;
+    billThumb.style.width = on.offsetWidth + 'px';
+    billThumb.style.transform = 'translateX(' + on.offsetLeft + 'px)';
+    billToggle.classList.add('has-thumb');
+  }
+
+  /* replay the price swap animation on an amount */
+  function swapAnim(el) {
+    el.classList.toggle('is-changing', false);
+    requestAnimationFrame(function () { el.classList.toggle('is-changing', true); });
+  }
+
   function setBilling(mode) {
+    var changed = mode !== billMode;
     billButtons.forEach(function (b) {
       var on = b.getAttribute('data-bill') === mode;
       b.classList.toggle('is-on', on);
@@ -1266,11 +1286,19 @@
     });
     billMode = mode;
     $$('.plans [data-' + mode + ']').forEach(function (el) {
-      if (el.classList.contains('amt')) el.textContent = el.getAttribute('data-' + mode);
-      else setText(el, el.getAttribute('data-' + mode));
+      if (el.classList.contains('amt')) {
+        el.textContent = el.getAttribute('data-' + mode);
+        if (changed && !reduceMotion.matches) swapAnim(el);
+      } else {
+        setText(el, el.getAttribute('data-' + mode));
+      }
     });
+    placeThumb();
   }
+  window.addEventListener('resize', placeThumb);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(placeThumb);
   var billMode = 'monthly';
+  placeThumb();
   billButtons.forEach(function (b) {
     b.addEventListener('click', function () { setBilling(b.getAttribute('data-bill')); });
   });
