@@ -196,10 +196,97 @@
         else el.classList.add('in-view');
       });
     }, { threshold: 0.45 });
-    $$('main .section h2, .agent-title, .loom').forEach(function (el) { onceSeen.observe(el); });
+    $$('main .section h2, .agent-title, .loom, .closing').forEach(function (el) { onceSeen.observe(el); });
   } else {
-    $$('.loom').forEach(function (el) { el.classList.add('in-view'); });
+    $$('.loom, .closing').forEach(function (el) { el.classList.add('in-view'); });
   }
+
+  /* ---------- preloader: count up, then lift away ---------- */
+  var preloaderDone = !root.classList.contains('preloading');
+  var afterPreload = [];
+  function whenLoaded(fn) { if (preloaderDone) fn(); else afterPreload.push(fn); }
+  (function () {
+    var pl = $('#preloader');
+    if (!pl || preloaderDone) return;
+    var pct = $('.pl-pct', pl);
+    var t0 = performance.now();
+    var dur = 1300;
+    function tick(now) {
+      var p = Math.min(1, (now - t0) / dur);
+      var eased = 1 - Math.pow(1 - p, 3);
+      if (pct) pct.textContent = String(Math.round(eased * 100));
+      pl.style.setProperty('--pl', eased.toFixed(3));
+      if (p < 1) { requestAnimationFrame(tick); return; }
+      pl.classList.add('is-done');
+      try { sessionStorage.setItem('sw-seen', '1'); } catch (e) { /* fine */ }
+      setTimeout(function () {
+        root.classList.remove('preloading');
+        preloaderDone = true;
+        afterPreload.splice(0).forEach(function (fn) { fn(); });
+      }, 420);
+    }
+    requestAnimationFrame(tick);
+  })();
+
+  /* ---------- custom cursor: a dot and a trailing ring ---------- */
+  if (window.matchMedia('(pointer: fine)').matches && !reduceMotion.matches) {
+    var dot = document.createElement('div');
+    var ring = document.createElement('div');
+    dot.className = 'cursor-dot';
+    ring.className = 'cursor-ring';
+    dot.setAttribute('aria-hidden', 'true');
+    ring.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(dot);
+    document.body.appendChild(ring);
+    var cx = -100, cy = -100, rx = -100, ry = -100;
+    var PRESSABLE = 'a, button, summary, select, input, textarea, label, [data-plan-card], .feature, .note';
+    document.addEventListener('pointermove', function (e) {
+      if (e.pointerType && e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
+      cx = e.clientX;
+      cy = e.clientY;
+      root.classList.add('cursor-on');
+      ring.classList.toggle('is-hover', !!(e.target.closest && e.target.closest(PRESSABLE)));
+    }, { passive: true });
+    document.addEventListener('pointerdown', function () { ring.classList.add('is-down'); });
+    document.addEventListener('pointerup', function () { ring.classList.remove('is-down'); });
+    document.documentElement.addEventListener('mouseleave', function () { root.classList.remove('cursor-on'); });
+    (function follow() {
+      rx += (cx - rx) * 0.2;
+      ry += (cy - ry) * 0.2;
+      dot.style.transform = 'translate3d(' + cx + 'px,' + cy + 'px,0)';
+      ring.style.transform = 'translate3d(' + rx.toFixed(1) + 'px,' + ry.toFixed(1) + 'px,0)';
+      requestAnimationFrame(follow);
+    })();
+  }
+
+  /* ---------- kinetic words: one big word per stretch of scroll ---------- */
+  (function () {
+    var kin = $('#alur');
+    if (!kin || reduceMotion.matches || window.innerHeight < 420) return;
+    kin.classList.add('is-live');
+    var words = $$('.kin-word', kin);
+    var count = $('.kin-count', kin);
+    var bar = $('.kin-bar i', kin);
+    var last = -1;
+    function pad(n) { return (n < 10 ? '0' : '') + n; }
+    function update() {
+      var total = kin.offsetHeight - window.innerHeight;
+      var p = total > 0 ? clamp01(-kin.getBoundingClientRect().top / total) : 0;
+      var idx = Math.min(words.length - 1, Math.floor(p * words.length));
+      if (idx !== last) {
+        words.forEach(function (w, i) {
+          w.classList.toggle('is-on', i === idx);
+          w.classList.toggle('is-past', i < idx);
+        });
+        if (count) count.textContent = pad(idx + 1) + ' / ' + pad(words.length);
+        last = idx;
+      }
+      if (bar) bar.style.transform = 'scaleX(' + p.toFixed(3) + ')';
+    }
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  })();
 
   /* a spotlight that follows the pointer across cards */
   document.addEventListener('pointermove', function (e) {
@@ -1174,6 +1261,7 @@
   function runIntro() {
     if (reduceMotion.matches || !live || window.scrollY > 40) { introStart = 0; return; }
     root.classList.add('intro-run');
+    introStart = performance.now();
     var cmd = $('.prompt .cmd');
     if (cmd) {
       var full = cmd.textContent;
@@ -1182,16 +1270,43 @@
       var typer = setInterval(function () {
         i++;
         cmd.textContent = full.slice(0, i);
-        if (i >= full.length) clearInterval(typer);
+        if (i >= full.length) { clearInterval(typer); setTimeout(cycleCommands, 2600); }
       }, 38);
     }
     setTimeout(function () { root.classList.remove('intro-run'); }, 2200);
   }
 
+  /* the prompt keeps working: each ScriptWeave command is typed, held, then deleted */
+  function cycleCommands() {
+    var cmd = $('.prompt .cmd');
+    if (!cmd || reduceMotion.matches) return;
+    var list = ['scriptweave review', 'scriptweave test', 'scriptweave docs', 'scriptweave agen', 'scriptweave init'];
+    var at = 0;
+    function erase(done) {
+      var t = setInterval(function () {
+        var v = cmd.textContent;
+        if (v.length <= 'scriptweave '.length) { clearInterval(t); done(); return; }
+        cmd.textContent = v.slice(0, -1);
+      }, 32);
+    }
+    function type(word, done) {
+      var t = setInterval(function () {
+        var v = cmd.textContent;
+        if (v.length >= word.length) { clearInterval(t); done(); return; }
+        cmd.textContent = word.slice(0, v.length + 1);
+      }, 55);
+    }
+    (function next() {
+      var word = list[at % list.length];
+      at++;
+      erase(function () { type(word, function () { setTimeout(next, 2200); }); });
+    })();
+  }
+
   if (story && stage && cv) {
     readColors();
     /* the ball's spin-in is timed from here, so the very first frame already starts small */
-    if (!reduceMotion.matches && window.scrollY <= 40) introStart = performance.now();
+    if (!reduceMotion.matches && window.scrollY <= 40) introStart = preloaderDone ? performance.now() : 1e12;
     gl3 = init3d();
     if (gl3) {
       gl3.canvas.id = cv.id;
@@ -1208,7 +1323,7 @@
       storyResize = setTimeout(function () { setMode(); kick(); }, 100);
     });
     onChange(reduceMotion, setMode);
-    runIntro();
+    whenLoaded(runIntro);
     function recolor() { readColors(); theme3d(); if (live) kick(); else render(0.97, 0); }
     onThemeChange = recolor;
     onChange(darkScheme, recolor);

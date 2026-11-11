@@ -258,5 +258,22 @@ window.SW_EN = {
 "Ganti ke mode terang": "Switch to light mode",
 "Ganti bahasa ke English": "Switch language to Indonesian",
 "Pilih bahasa": "Choose language",
-"ScriptWeave | Asisten Coding AI": "ScriptWeave | AI Coding Assistant"
+"ScriptWeave | Asisten Coding AI": "ScriptWeave | AI Coding Assistant",
+"menenun konteks": "weaving context",
+"Dari ide sampai rilis": "From idea to release",
+"// dari ide sampai rilis": "// from idea to release",
+"Tulis.": "Write.",
+"Weave Complete menenun kode dari komentarmu.": "Weave Complete weaves code from your comment.",
+"Review.": "Review.",
+"Weave Review menangkap bug sebelum merge.": "Weave Review catches bugs before merge.",
+"Uji.": "Test.",
+"Weave Test menulis unit test, termasuk kasus tepi.": "Weave Test writes unit tests, edge cases included.",
+"Rilis.": "Ship.",
+"Weave Docs merapikan dokumentasi, kamu tinggal approve.": "Weave Docs tidies the documentation; you just approve.",
+"Ide → kode.": "Idea → code.",
+"Satu asisten, dari baris pertama sampai rilis.": "One assistant, from the first line to release.",
+"Penutup": "Closing",
+"// git commit -m \"mulai menenun\"": "// git commit -m \"start weaving\"",
+"Ayo tenun kode": "Let's weave code",
+"yang berarti.": "that matters."
 };

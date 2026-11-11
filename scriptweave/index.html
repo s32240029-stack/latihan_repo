@@ -14,11 +14,24 @@
     var r = document.documentElement;
     r.classList.add('js');
     try { if (localStorage.getItem('sw-theme') === 'dark') r.setAttribute('data-sw-theme', 'dark'); } catch (e) { /* storage unavailable */ }
+    /* the preloader plays once per visit, and never for reduced motion */
+    try {
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && !sessionStorage.getItem('sw-seen')) r.classList.add('preloading');
+    } catch (e) { /* storage unavailable: skip the preloader */ }
   })();
 </script>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
+<div class="preloader" id="preloader" aria-hidden="true">
+  <div class="pl-inner">
+    <svg class="pl-mark" viewBox="0 0 24 24" aria-hidden="true"><rect class="pl-weft w1" x="2" y="6" width="20" height="4" rx="2"/><rect class="pl-weft w2" x="2" y="14" width="20" height="4" rx="2"/><rect class="pl-warp p1" x="6" y="2" width="4" height="20" rx="2"/><rect class="pl-warp p2" x="14" y="2" width="4" height="20" rx="2"/><rect class="pl-weft w1" x="5" y="6" width="6" height="4"/><rect class="pl-weft w2" x="13" y="14" width="6" height="4"/></svg>
+    <p class="pl-word">Script<i>/</i>Weave</p>
+    <p class="pl-sub"><span>menenun konteks</span> <b class="pl-pct" data-no-i18n>0</b>%</p>
+    <span class="pl-bar"><i></i></span>
+  </div>
+</div>
 
 <a class="skip" href="#beranda">Lompat ke konten</a>
 
@@ -71,7 +84,7 @@
 
       <div class="story-hero" id="story-hero">
         <div class="wrap hero-wrap">
-          <p class="eyebrow prompt"><span class="dollar" aria-hidden="true">$</span> <span class="cmd">scriptweave init</span> <span class="dim">· asisten coding AI untuk developer Indonesia</span><span class="caret" aria-hidden="true"></span></p>
+          <p class="eyebrow prompt"><span class="dollar" aria-hidden="true">$</span> <span class="cmd" data-no-i18n>scriptweave init</span> <span class="dim">· asisten coding AI untuk developer Indonesia</span><span class="caret" aria-hidden="true"></span></p>
           <h1 id="hero-title">
             <span class="h1-line" id="hero-anchor">Tenun ide</span>
             <span class="h1-line">jadi kode.</span>
@@ -136,6 +149,38 @@
       <ul class="compat-list compat-langs" aria-label="Bahasa pemrograman yang didukung">
         <li>TypeScript</li><li>Python</li><li>Go</li><li>Java</li><li>Kotlin</li><li>PHP</li><li>Dart</li><li>Rust</li>
       </ul>
+    </div>
+  </section>
+
+  <section class="kinetic" id="alur" aria-label="Dari ide sampai rilis">
+    <div class="kin-stage">
+      <p class="eyebrow kin-eyebrow">// dari ide sampai rilis</p>
+      <div class="kin-words">
+        <article class="kin-word">
+          <h2>Tulis.</h2>
+          <p>Weave Complete menenun kode dari komentarmu.</p>
+        </article>
+        <article class="kin-word">
+          <h2>Review.</h2>
+          <p>Weave Review menangkap bug sebelum merge.</p>
+        </article>
+        <article class="kin-word">
+          <h2>Uji.</h2>
+          <p>Weave Test menulis unit test, termasuk kasus tepi.</p>
+        </article>
+        <article class="kin-word">
+          <h2>Rilis.</h2>
+          <p>Weave Docs merapikan dokumentasi, kamu tinggal approve.</p>
+        </article>
+        <article class="kin-word kin-final">
+          <h2>Ide → kode.</h2>
+          <p>Satu asisten, dari baris pertama sampai rilis.</p>
+        </article>
+      </div>
+      <div class="kin-meta" aria-hidden="true">
+        <span class="kin-count" data-no-i18n>01 / 05</span>
+        <span class="kin-bar"><i></i></span>
+      </div>
     </div>
   </section>
 
@@ -595,6 +640,14 @@
           <button class="btn btn-ghost" type="button" id="form-again">Kirim pesan lain</button>
         </div>
       </div>
+    </div>
+  </section>
+
+  <section class="closing" aria-label="Penutup">
+    <div class="wrap closing-in">
+      <p class="eyebrow">// git commit -m "mulai menenun"</p>
+      <p class="closing-text"><span class="cl-line">Ayo tenun kode</span><span class="cl-line cl-hl">yang berarti.</span></p>
+      <a class="btn btn-primary btn-arrow" href="#kontak" data-plan="Starter">Mulai Gratis</a>
     </div>
   </section>
 
