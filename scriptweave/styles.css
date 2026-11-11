@@ -2,36 +2,37 @@
    Loom layout: the page opens on a pinned stage where one thread changes form as
    you scroll (yarn ball, warp, woven code, hemmed cloth). Below it, a left-aligned
    editorial column; woven bands mark the seams between major parts.
-   Look: a developer's night screen. Deep blue-black with a faint coordinate grid,
-   threads that glow like fibre optics, and three signal colours taken from code:
-   electric indigo (the thread), cyan (interactive), amber (keywords and accents).
-   One dark world on every device, so there is no light theme. */
+   Look: a bright lab bench. Cool white with a faint coordinate grid, glossy 3D
+   thread with soft shadows, and signal colours taken from code: electric indigo
+   (the thread, primary actions), cyan (labels, focus), amber (accents).
+   Code editors stay dark, as they are on a developer's screen.
+   One light world on every device, so there is no dark theme. */
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 
   /* colour */
-  --bg: #060912;            /* screen black, blue-biased */
-  --bg-raised: #0a0f1e;
-  --surface: #121a35;
-  --line: #1f2a4d;
-  --grid: rgba(120, 140, 255, .055);
-  --fg: #e8ecff;
-  --muted: #8d98c4;
-  --turmeric: #ffb547;      /* amber signal */
+  --bg: #f4f6fb;            /* cool white */
+  --bg-raised: #ffffff;
+  --surface: #e8ecf7;
+  --line: #d7deee;
+  --grid: rgba(60, 80, 200, .065);
+  --fg: #0b1033;
+  --muted: #586287;
+  --turmeric: #f5a524;      /* amber signal */
   --turmeric-ink: #1a1205;
-  --accent-text: #6fe7ff;   /* cyan: links, labels, focus */
-  --cyan: #3de0ff;
-  --cyan-ink: #031319;
-  --madder: #ff5c7a;
-  --ok: #3df5a8;
-  --yarn: #6c7bff;          /* the thread that runs through the stage */
-  --yarn-hi: #b9c2ff;
-  --yarn-lo: #222a8a;
-  --shadow: 0 30px 80px -30px rgba(0, 0, 0, .85);
-  --glow: 0 0 0 1px rgba(61, 224, 255, .35), 0 0 42px -8px rgba(61, 224, 255, .45);
+  --accent-text: #0e7490;   /* cyan text, readable on white */
+  --cyan: #0891b2;
+  --cyan-ink: #ffffff;
+  --madder: #e5384f;
+  --ok: #059669;
+  --yarn: #4f5bff;          /* the thread that runs through the stage */
+  --yarn-hi: #9aa3ff;
+  --yarn-lo: #1e2499;
+  --shadow: 0 24px 60px -28px rgba(20, 30, 90, .28);
+  --glow: 0 0 0 1px rgba(79, 91, 255, .35), 0 18px 48px -18px rgba(79, 91, 255, .45);
 
-  /* the editor mock-ups */
+  /* the editor mock-ups stay dark, like a real editor */
   --ed-bg: #0b1124;
   --ed-bar: #0f1730;
   --ed-line: #24315a;
@@ -1267,28 +1268,27 @@ h3 { font-size: var(--fs-h3); line-height: 1.08; letter-spacing: -.005em; }
 }
 .price-foot li:last-child:nth-child(odd) { grid-column: 1 / -1; }
 
-/* ---------- night-screen layer ---------- */
+/* ---------- lab-bench layer ---------- */
 
 body {
   background-color: var(--bg);
   background-image:
-    radial-gradient(1200px 700px at 78% -8%, rgba(108, 123, 255, .16), transparent 60%),
-    radial-gradient(900px 600px at 0% 30%, rgba(61, 224, 255, .06), transparent 60%),
+    radial-gradient(1100px 650px at 80% -10%, rgba(79, 91, 255, .12), transparent 60%),
+    radial-gradient(900px 600px at 0% 30%, rgba(8, 145, 178, .07), transparent 60%),
     linear-gradient(var(--grid) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid) 1px, transparent 1px);
   background-size: auto, auto, 56px 56px, 56px 56px;
 }
 .section-alt, .site-footer { background-color: var(--bg-raised); }
-.site-header { background: color-mix(in srgb, var(--bg) 78%, transparent); }
+.site-header { background: color-mix(in srgb, var(--bg) 82%, transparent); }
 
 h1 { line-height: .9; }
 h2 { line-height: .98; }
 .chapter h2 { font-size: clamp(2rem, 1rem + 3.4vw, 4rem); line-height: .96; }
 .ch-num, .steps-list li::before { font-family: var(--font-mono); font-size: 1rem; font-weight: 700; color: var(--accent-text); }
-.ch-num::before, .steps-list li::before { letter-spacing: .04em; }
 .th-label strong, .loom-cloth strong, .steps-list strong, .faq-list summary, .form-done-title { font-weight: 600; letter-spacing: -.02em; }
 .wordmark { font-weight: 700; letter-spacing: .02em; }
-.wordmark i { color: var(--cyan); }
+.wordmark i { color: var(--yarn); }
 .price, .amt { font-weight: 700; letter-spacing: -.03em; }
 
 /* the second headline line carries the one gradient on the page */
@@ -1299,30 +1299,26 @@ h2 { line-height: .98; }
   color: transparent;
 }
 
-.btn-primary { background: var(--cyan); color: var(--cyan-ink); box-shadow: 0 0 28px -8px rgba(61, 224, 255, .7); }
-.btn-primary:hover { background: var(--turmeric); color: var(--turmeric-ink); box-shadow: 0 0 28px -8px rgba(255, 181, 71, .7); }
-.btn-ghost { border-color: var(--line); }
-.btn-ghost:hover { background: transparent; border-color: var(--cyan); color: var(--cyan); }
-.icon-btn { border-color: var(--line); }
+.btn-primary { background: var(--yarn); color: #fff; box-shadow: 0 10px 28px -10px rgba(79, 91, 255, .8); }
+.btn-primary:hover { background: var(--fg); color: #fff; box-shadow: 0 10px 28px -10px rgba(11, 16, 51, .6); }
+.btn-ghost { border-color: var(--fg); }
+.btn-ghost:hover { background: transparent; border-color: var(--yarn); color: var(--yarn); }
 
-.stage-dots li.is-on { background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
-.tag { background: var(--surface); border-color: var(--line); color: var(--fg); }
-.tag-ink { background: var(--bg); border-color: var(--cyan); color: var(--cyan); }
+.stage-dots li.is-on { background: var(--yarn); box-shadow: 0 0 10px rgba(79, 91, 255, .7); }
+.tag { background: var(--bg-raised); border-color: var(--line); color: var(--fg); }
+.tag-ink { background: var(--fg); border-color: var(--fg); color: #fff; }
 .tag-ok { background: var(--turmeric); border-color: var(--turmeric); color: var(--turmeric-ink); }
 
-.editor, .mock, .term { border-color: var(--ed-line); box-shadow: var(--shadow), 0 0 0 1px rgba(108, 123, 255, .12); }
-.feature, .plan, .contact-panel, .note { background: color-mix(in srgb, var(--bg-raised) 86%, transparent); }
-.plan-featured { border-color: var(--cyan); box-shadow: var(--glow); }
-.note.is-open { border-color: var(--cyan); }
-.bill-toggle { border-color: var(--line); }
-.bill-toggle button.is-on { background: var(--cyan); color: var(--cyan-ink); }
-.compat-list li { border-color: var(--line); }
-.principle, .steps, .faq-list, .contact-list, .agent { border-top-color: var(--line); }
-.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(61, 224, 255, .15); }
-
+.editor, .mock, .term { border-color: var(--ed-line); box-shadow: var(--shadow); }
+.feature, .plan, .contact-panel, .note { background: var(--bg-raised); }
+.plan-featured { border-color: var(--yarn); box-shadow: var(--glow); }
+.note.is-open { border-color: var(--yarn); }
+.bill-toggle button.is-on { background: var(--yarn); color: #fff; }
+.compat-list li { border-color: var(--fg); }
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--yarn); box-shadow: 0 0 0 3px rgba(79, 91, 255, .15); }
 
 /* hero prompt line */
 .prompt { display: flex; flex-wrap: wrap; align-items: center; gap: 0 .6ch; color: var(--fg); }
 .prompt .dollar { color: var(--ok); }
 .prompt .dim { color: var(--muted); }
-.prompt .caret { width: .6ch; height: 1.15em; background: var(--cyan); animation: blink 1s steps(1) infinite; }
+.prompt .caret { width: .6ch; height: 1.15em; background: var(--yarn); animation: blink 1s steps(1) infinite; }

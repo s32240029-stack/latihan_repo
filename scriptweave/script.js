@@ -528,54 +528,56 @@
     renderer.setClearColor(0x000000, 0);
     renderer.outputEncoding = T.sRGBEncoding;
     renderer.toneMapping = T.NoToneMapping;
-    renderer.shadowMap.enabled = false;   /* on a dark screen the threads glow instead of casting shadows */
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = T.PCFSoftShadowMap;
 
     var scene = new T.Scene();
     var camera = new T.PerspectiveCamera(22, 1, 1, 200);
     camera.position.set(0, 0, 40);
 
-    scene.add(new T.HemisphereLight(0xaab6ff, 0x05060f, 0.4));
-    var key = new T.DirectionalLight(0xffffff, 0.7);
+    scene.add(new T.HemisphereLight(0xf2f5ff, 0x6c7290, 0.6));
+    var key = new T.DirectionalLight(0xffffff, 0.85);
     key.position.set(-6, 9, 26);
+    key.castShadow = true;
     key.shadow.mapSize.set(1536, 1536);
     key.shadow.bias = -0.0004;
     key.shadow.normalBias = 0.02;
     scene.add(key);
     scene.add(key.target);
-    var rim = new T.DirectionalLight(0x3de0ff, 1.1);    /* cyan rim from the back right */
+    var rim = new T.DirectionalLight(0x3de0ff, 0.55);   /* cyan rim from the back right */
     rim.position.set(16, -4, -12);
     scene.add(rim);
-    var rim2 = new T.DirectionalLight(0x8a5cff, 0.7);   /* violet rim from the back left */
+    var rim2 = new T.DirectionalLight(0x8a5cff, 0.35);  /* violet rim from the back left */
     rim2.position.set(-16, 6, -10);
     scene.add(rim2);
 
     /* an invisible wall behind everything that only catches the soft shadow */
-    var wall = new T.Mesh(new T.PlaneGeometry(1, 1), new T.ShadowMaterial({ opacity: 0.13 }));
-    wall.visible = false;
+    var wall = new T.Mesh(new T.PlaneGeometry(1, 1), new T.ShadowMaterial({ opacity: 0.12 }));
+    wall.receiveShadow = true;
     scene.add(wall);
 
     function col(hex) { return new T.Color(hex).convertSRGBToLinear(); }
-    /* fibre-optic thread: glossy, with a little light of its own */
-    function wool(hex, rough) { return new T.MeshStandardMaterial({ color: col(hex), roughness: rough || 0.38, metalness: 0.25, emissive: col(hex), emissiveIntensity: 0.32 }); }
+    /* glossy synthetic thread, lit like a product shot */
+    function wool(hex, rough) { return new T.MeshStandardMaterial({ color: col(hex), roughness: rough || 0.36, metalness: 0.15, emissive: col(hex), emissiveIntensity: 0.08 }); }
     var yarnLight = col(C.yarnHi).lerp(col(C.yarn), 0.45);
     var mats = {
       warp: wool(C.yarn),
       kw: wool(C.kw, 0.7),
       str: wool(C.str, 0.74),
       fn: wool(C.fn, 0.76),
-      plain: new T.MeshStandardMaterial({ color: yarnLight, roughness: 0.38, metalness: 0.25, emissive: yarnLight, emissiveIntensity: 0.3 }),
+      plain: new T.MeshStandardMaterial({ color: yarnLight, roughness: 0.36, metalness: 0.15, emissive: yarnLight, emissiveIntensity: 0.08 }),
       ink: new T.MeshStandardMaterial({ color: col(C.fg), roughness: 0.35, metalness: 0.1 }),
       gold: new T.MeshStandardMaterial({ color: col(C.kw), roughness: 0.32, metalness: 0.35 })
     };
 
     /* the yarn ball: bands of parallel strands wound in different directions over a core */
     var ball = new T.Group();
-    var core = new T.Mesh(new T.SphereGeometry(0.965, 48, 32), new T.MeshStandardMaterial({ color: col(C.yarnLo), roughness: 0.6, emissive: col(C.yarnLo), emissiveIntensity: 0.4 }));
+    var core = new T.Mesh(new T.SphereGeometry(0.965, 48, 32), new T.MeshStandardMaterial({ color: col(C.yarnLo), roughness: 0.6, emissive: col(C.yarnLo), emissiveIntensity: 0.1 }));
     core.castShadow = true;
     ball.add(core);
     var BUNDLES = 16;
     var PER = 15;
-    var strands = new T.InstancedMesh(new T.TorusGeometry(1, 0.03, 6, 140), new T.MeshStandardMaterial({ color: 0xffffff, roughness: 0.32, metalness: 0.3, emissive: col(C.yarn), emissiveIntensity: 0.12 }), BUNDLES * PER);
+    var strands = new T.InstancedMesh(new T.TorusGeometry(1, 0.03, 6, 140), new T.MeshStandardMaterial({ color: 0xffffff, roughness: 0.32, metalness: 0.2, emissive: col(C.yarn), emissiveIntensity: 0.06 }), BUNDLES * PER);
     strands.castShadow = true;
     strands.receiveShadow = true;
     var rnd = seeded(7);
@@ -623,9 +625,9 @@
     hx.fillRect(0, 0, 128, 128);
     var haloTex = new T.CanvasTexture(hc);
     function halo(hex, opacity) {
-      return new T.Sprite(new T.SpriteMaterial({ map: haloTex, color: col(hex), transparent: true, opacity: opacity, blending: T.AdditiveBlending, depthWrite: false }));
+      return new T.Sprite(new T.SpriteMaterial({ map: haloTex, color: col(hex), transparent: true, opacity: opacity, depthWrite: false }));
     }
-    var ballHalo = halo(C.yarn, 0.55);
+    var ballHalo = halo(C.yarn, 0.16);
     ballHalo.scale.set(3.4, 3.4, 1);
     ballHalo.position.z = -1.2;
     ball.add(ballHalo);
@@ -811,7 +813,7 @@
     hem.count = 0;
     L.cloth.add(hem);
     L.hem = hem;
-    var clothHalo = gl3.halo(C.cyan || C.yarn, 0.16);
+    var clothHalo = gl3.halo(C.cyan || C.yarn, 0.07);
     clothHalo.scale.set(g.s * k * 1.9, g.clothH * k * 2.1, 1);
     clothHalo.position.z = -L.amp * 6;
     L.cloth.add(clothHalo);

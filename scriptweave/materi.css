@@ -1,27 +1,27 @@
 /* ScriptWeave campaign material (katalog.html, iklan.html).
-   Same night screen as the website: blue-black panels on a faint coordinate grid,
-   glowing indigo thread, cyan for actions, amber for accents.
+   Same bright lab bench as the website: white panels on a cool, faintly gridded desk,
+   glossy indigo thread, cyan labels, amber accents.
    Layout: panels stacked on the desk, each panel one catalogue page or one ad. */
 
 :root {
-  color-scheme: dark;
-  --table: #04060d;          /* the desk behind the panels */
-  --paper: #0a0f1e;          /* a panel */
-  --paper-2: #111934;
-  --deep: #060912;
-  --line: #1f2a4d;
-  --grid: rgba(120, 140, 255, .06);
-  --ink: #e8ecff;
-  --muted: #8d98c4;
-  --yarn: #6c7bff;
-  --cyan: #3de0ff;
-  --cyan-ink: #031319;
-  --turmeric: #ffb547;
+  color-scheme: light;
+  --table: #eef1f8;          /* the desk behind the panels */
+  --paper: #ffffff;          /* a panel */
+  --paper-2: #f3f5fb;
+  --deep: #eef0ff;           /* a panel tinted with the thread colour */
+  --line: #d7deee;
+  --grid: rgba(60, 80, 200, .07);
+  --ink: #0b1033;
+  --muted: #586287;
+  --yarn: #4f5bff;
+  --cyan: #0891b2;
+  --cyan-ink: #ffffff;
+  --turmeric: #f5a524;
   --turmeric-ink: #1a1205;
-  --accent-text: #6fe7ff;
-  --madder: #ff5c7a;
-  --ok: #3df5a8;
-  --shadow: 0 30px 80px -30px rgba(0, 0, 0, .9);
+  --accent-text: #0e7490;
+  --madder: #e5384f;
+  --ok: #059669;
+  --shadow: 0 24px 60px -30px rgba(20, 30, 90, .3);
 
   --font-display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
   --font-body: "Plus Jakarta Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
@@ -34,7 +34,7 @@ body {
   margin: 0;
   background-color: var(--table);
   background-image:
-    radial-gradient(1100px 700px at 80% -10%, rgba(108, 123, 255, .14), transparent 60%),
+    radial-gradient(1100px 700px at 80% -10%, rgba(79, 91, 255, .12), transparent 60%),
     linear-gradient(var(--grid) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid) 1px, transparent 1px);
   background-size: auto, 56px 56px, 56px 56px;
@@ -118,7 +118,7 @@ body::before {
   text-decoration: none;
   color: var(--ink);
 }
-.wordmark i { font-style: normal; color: var(--cyan); margin-inline: .12em; }
+.wordmark i { font-style: normal; color: var(--yarn); margin-inline: .12em; }
 .mark { width: 24px; height: 24px; flex: none; }
 .m-weft { fill: var(--turmeric); }
 .m-warp { fill: var(--ink); }
@@ -182,9 +182,9 @@ body::before {
   min-height: 48px;
   padding: 0 24px;
   border-radius: 999px;
-  background: var(--cyan);
-  color: var(--cyan-ink);
-  box-shadow: 0 0 28px -8px rgba(61, 224, 255, .7);
+  background: var(--yarn);
+  color: #fff;
+  box-shadow: 0 10px 28px -10px rgba(79, 91, 255, .8);
   font-size: .78rem;
   font-weight: 700;
   letter-spacing: .09em;
@@ -193,7 +193,7 @@ body::before {
   transition: background-color .15s ease, color .15s ease;
 }
 .btn::after { content: "\2192"; font-size: 1.15em; line-height: 1; }
-.btn:hover { background: var(--turmeric); color: var(--turmeric-ink); }
+.btn:hover { background: var(--ink); color: #fff; }
 
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .chips li {
@@ -238,7 +238,7 @@ body::before {
 .table-wrap { overflow-x: auto; min-width: 0; }
 table { width: 100%; border-collapse: collapse; font-size: .9rem; }
 th, td { padding: 11px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
-thead th { border-bottom: 1.5px solid var(--cyan); font-family: var(--font-mono); font-size: .72rem; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+thead th { border-bottom: 1.5px solid var(--yarn); font-family: var(--font-mono); font-size: .72rem; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
 tbody th { font-weight: 600; }
 td.num { font-variant-numeric: tabular-nums; }
 

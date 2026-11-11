@@ -50,7 +50,7 @@
   .frame-box b { position: relative; font-family: var(--font-display); font-weight: 700; font-size: 9cqi; text-transform: uppercase; line-height: .9; text-align: center; color: var(--ink); }
   .frame-box.logo { background: var(--deep); }
   .frame-box.logo b { color: var(--ink); }
-  .frame-box.logo i { display: block; font-style: italic; text-transform: none; font-size: 6cqi; color: var(--turmeric); margin-top: 3cqi; }
+  .frame-box.logo i { display: block; font-style: italic; text-transform: none; font-size: 6cqi; color: var(--yarn); margin-top: 3cqi; }
   .frame p { font-family: var(--font-mono); font-size: .66rem; color: var(--muted); }
 
   /* b. response: a 9:16 story and a search result */
@@ -63,25 +63,25 @@
     padding: 26px 22px 22px;
     border-radius: 22px;
     background: radial-gradient(circle at 50% 0%, rgba(108, 123, 255, .3), transparent 60%), var(--deep);
-    border: 1px solid var(--cyan);
+    border: 1px solid var(--yarn);
     color: var(--ink);
-    box-shadow: var(--shadow), 0 0 42px -14px rgba(61, 224, 255, .55);
+    box-shadow: var(--shadow), 0 18px 44px -20px rgba(79, 91, 255, .55);
     container-type: inline-size;
     overflow: hidden;
   }
   .story .s-top { display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 3.6cqi; color: var(--muted); }
   .story .s-top .wordmark { color: var(--ink); font-size: 5.4cqi; gap: 2cqi; }
-  .story .s-top .wordmark i { color: var(--cyan); }
+  .story .s-top .wordmark i { color: var(--yarn); }
   .story .s-top .mark { width: 6cqi; height: 6cqi; }
   .story h3 { font-size: 11.5cqi; line-height: .94; }
-  .story h3 em { font-style: normal; color: var(--turmeric); }
+  .story h3 em { font-style: normal; color: var(--yarn); }
   .ticket { display: grid; gap: 1cqi; padding: 4cqi 5cqi; border: 2px dashed var(--turmeric); border-radius: 3cqi; }
-  .ticket code { font-size: 9cqi; font-weight: 700; letter-spacing: .12em; color: var(--turmeric); }
+  .ticket code { font-size: 9cqi; font-weight: 700; letter-spacing: .12em; color: #b45309; }
   .ticket span { font-size: 4.3cqi; line-height: 1.4; }
   .story ul { display: grid; gap: 2.4cqi; font-size: 5cqi; }
   .story ul li::before { content: "\2713  "; color: var(--ok); }
   .story .s-cta { margin-top: auto; display: grid; gap: 2.5cqi; text-align: center; }
-  .story .s-cta b { display: block; padding: 4.4cqi; border-radius: 999px; background: var(--cyan); color: var(--cyan-ink); box-shadow: 0 0 24px -6px rgba(61, 224, 255, .7); font-size: 4.4cqi; letter-spacing: .08em; text-transform: uppercase; }
+  .story .s-cta b { display: block; padding: 4.4cqi; border-radius: 999px; background: var(--yarn); color: #fff; box-shadow: 0 10px 24px -8px rgba(79, 91, 255, .8); font-size: 4.4cqi; letter-spacing: .08em; text-transform: uppercase; }
   .story .s-cta small { font-size: 4cqi; color: var(--muted); }
 
   .serp { width: 100%; max-width: 520px; display: grid; gap: 4px; padding: 16px 18px; border-radius: 10px; background: #fff; color: #1f2430; box-shadow: 0 10px 24px -18px rgba(20, 26, 69, .5); font-family: var(--font-body); }
@@ -106,7 +106,7 @@
   .mail-body ul li::before { content: ""; position: absolute; left: 2px; top: .62em; width: 10px; height: 4px; border-radius: 2px; background: var(--turmeric); }
   .price-strike { font-family: var(--font-display); font-weight: 700; letter-spacing: -.03em; font-size: 1.9rem; line-height: 1; color: #141a45; }
   .price-strike s { font-size: 1.1rem; color: #8a8ea3; margin-left: 8px; }
-  .mail-cta a { display: inline-block; padding: 13px 22px; border-radius: 999px; background: #0a0f1e; color: var(--cyan); text-decoration: none; font-size: .78rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+  .mail-cta a { display: inline-block; padding: 13px 22px; border-radius: 999px; background: var(--yarn); color: #fff; text-decoration: none; font-size: .78rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
   .mail-foot { margin-inline: 24px; padding-top: 12px; border-top: 1px solid #e6e2d8; font-size: .72rem; color: #6b6f80; }
   .mail .muted { color: #5b6077; }
   .var { padding: 0 4px; border-radius: 3px; background: color-mix(in srgb, var(--turmeric) 22%, #fff); font-family: var(--font-mono); font-size: .86em; }
@@ -153,7 +153,7 @@
       <div class="stage">
         <article class="poster" aria-label="Poster iklan awareness">
           <h3>Kode yang rapi <span>itu ditenun.</span></h3>
-          <img src="assets/ball.webp" alt="" width="1014" height="1696">
+          <img src="assets/ball.webp" alt="" width="1100" height="1579">
           <p class="p-body">ScriptWeave membaca seluruh codebase kamu, lalu menenun saran yang terasa ditulis rekan satu tim.</p>
           <div class="p-foot">
             <span class="wordmark"><svg class="mark" viewBox="0 0 24 24" aria-hidden="true"><rect class="m-weft" x="2" y="6" width="20" height="4" rx="2"/><rect class="m-weft" x="2" y="14" width="20" height="4" rx="2"/><rect class="m-warp" x="6" y="2" width="4" height="20" rx="2"/><rect class="m-warp" x="14" y="2" width="4" height="20" rx="2"/><rect class="m-weft" x="5" y="6" width="6" height="4"/><rect class="m-weft" x="13" y="14" width="6" height="4"/></svg><span>Script<i>/</i>Weave</span></span>
@@ -162,8 +162,8 @@
         </article>
         <p class="cap">Poster feed, 4:5</p>
         <div class="board" aria-label="Storyboard bumper 6 detik">
-          <div class="frame"><div class="frame-box"><img src="assets/ball.webp" alt="" width="1014" height="1696"></div><p>0–2 dtk · “Kode yang rapi”</p></div>
-          <div class="frame"><div class="frame-box"><img src="assets/weaving.webp" alt="" width="1000" height="1262"></div><p>2–4 dtk · “itu ditenun.”</p></div>
+          <div class="frame"><div class="frame-box"><img src="assets/ball.webp" alt="" width="1100" height="1579"></div><p>0–2 dtk · “Kode yang rapi”</p></div>
+          <div class="frame"><div class="frame-box"><img src="assets/weaving.webp" alt="" width="1000" height="1333"></div><p>2–4 dtk · “itu ditenun.”</p></div>
           <div class="frame"><div class="frame-box logo"><b>ScriptWeave<i>Tenun ide jadi kode.</i></b></div><p>4–6 dtk · logo</p></div>
         </div>
         <p class="cap">Storyboard bumper YouTube, 6 detik</p>
