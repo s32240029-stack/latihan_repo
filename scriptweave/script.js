@@ -134,6 +134,7 @@
     C.kw = v('--turmeric');
     C.str = v('--madder');
     C.fn = v('--ok');
+    C.cyan = v('--cyan');
     C.plain = C.yarn;
   }
 
@@ -163,7 +164,7 @@
       var lineEnd = anchorEl.offsetLeft + anchorEl.offsetWidth;
       var next = anchorEl.nextElementSibling;
       if (next && next.offsetWidth) lineEnd = Math.max(lineEnd, next.offsetLeft + next.offsetWidth);
-      hx = lineEnd + rh * 0.42;
+      hx = lineEnd + rh * (wide ? 0.8 : 0.42);
       hy = anchorEl.offsetTop + anchorEl.offsetHeight * 0.98;
     }
     g.hero = { x: Math.min(hx, W - rh - 8), y: hy, r: rh };
@@ -527,52 +528,54 @@
     renderer.setClearColor(0x000000, 0);
     renderer.outputEncoding = T.sRGBEncoding;
     renderer.toneMapping = T.NoToneMapping;
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = T.PCFSoftShadowMap;
+    renderer.shadowMap.enabled = false;   /* on a dark screen the threads glow instead of casting shadows */
 
     var scene = new T.Scene();
     var camera = new T.PerspectiveCamera(22, 1, 1, 200);
     camera.position.set(0, 0, 40);
 
-    scene.add(new T.HemisphereLight(0xfff6ea, 0x6f6658, 0.62));
-    var key = new T.DirectionalLight(0xfff8ee, 0.95);
+    scene.add(new T.HemisphereLight(0xaab6ff, 0x05060f, 0.4));
+    var key = new T.DirectionalLight(0xffffff, 0.7);
     key.position.set(-6, 9, 26);
-    key.castShadow = true;
     key.shadow.mapSize.set(1536, 1536);
     key.shadow.bias = -0.0004;
     key.shadow.normalBias = 0.02;
     scene.add(key);
     scene.add(key.target);
-    var rim = new T.DirectionalLight(0xc4ccff, 0.35);
-    rim.position.set(14, -6, -10);
+    var rim = new T.DirectionalLight(0x3de0ff, 1.1);    /* cyan rim from the back right */
+    rim.position.set(16, -4, -12);
     scene.add(rim);
+    var rim2 = new T.DirectionalLight(0x8a5cff, 0.7);   /* violet rim from the back left */
+    rim2.position.set(-16, 6, -10);
+    scene.add(rim2);
 
     /* an invisible wall behind everything that only catches the soft shadow */
     var wall = new T.Mesh(new T.PlaneGeometry(1, 1), new T.ShadowMaterial({ opacity: 0.13 }));
-    wall.receiveShadow = true;
+    wall.visible = false;
     scene.add(wall);
 
     function col(hex) { return new T.Color(hex).convertSRGBToLinear(); }
-    function wool(hex, rough) { return new T.MeshStandardMaterial({ color: col(hex), roughness: rough || 0.82, metalness: 0 }); }
+    /* fibre-optic thread: glossy, with a little light of its own */
+    function wool(hex, rough) { return new T.MeshStandardMaterial({ color: col(hex), roughness: rough || 0.38, metalness: 0.25, emissive: col(hex), emissiveIntensity: 0.32 }); }
     var yarnLight = col(C.yarnHi).lerp(col(C.yarn), 0.45);
     var mats = {
       warp: wool(C.yarn),
       kw: wool(C.kw, 0.7),
       str: wool(C.str, 0.74),
       fn: wool(C.fn, 0.76),
-      plain: new T.MeshStandardMaterial({ color: yarnLight, roughness: 0.8 }),
+      plain: new T.MeshStandardMaterial({ color: yarnLight, roughness: 0.38, metalness: 0.25, emissive: yarnLight, emissiveIntensity: 0.3 }),
       ink: new T.MeshStandardMaterial({ color: col(C.fg), roughness: 0.35, metalness: 0.1 }),
       gold: new T.MeshStandardMaterial({ color: col(C.kw), roughness: 0.32, metalness: 0.35 })
     };
 
     /* the yarn ball: bands of parallel strands wound in different directions over a core */
     var ball = new T.Group();
-    var core = new T.Mesh(new T.SphereGeometry(0.965, 48, 32), wool(C.yarnLo, 0.95));
+    var core = new T.Mesh(new T.SphereGeometry(0.965, 48, 32), new T.MeshStandardMaterial({ color: col(C.yarnLo), roughness: 0.6, emissive: col(C.yarnLo), emissiveIntensity: 0.4 }));
     core.castShadow = true;
     ball.add(core);
     var BUNDLES = 16;
     var PER = 15;
-    var strands = new T.InstancedMesh(new T.TorusGeometry(1, 0.03, 6, 140), new T.MeshStandardMaterial({ color: 0xffffff, roughness: 0.8 }), BUNDLES * PER);
+    var strands = new T.InstancedMesh(new T.TorusGeometry(1, 0.03, 6, 140), new T.MeshStandardMaterial({ color: 0xffffff, roughness: 0.32, metalness: 0.3, emissive: col(C.yarn), emissiveIntensity: 0.12 }), BUNDLES * PER);
     strands.castShadow = true;
     strands.receiveShadow = true;
     var rnd = seeded(7);
@@ -607,6 +610,25 @@
     strands.instanceMatrix.needsUpdate = true;
     if (strands.instanceColor) strands.instanceColor.needsUpdate = true;
     ball.add(strands);
+
+    /* a soft halo behind the ball, so it reads as lit from within */
+    var hc = document.createElement('canvas');
+    hc.width = hc.height = 128;
+    var hx = hc.getContext('2d');
+    var hg = hx.createRadialGradient(64, 64, 0, 64, 64, 64);
+    hg.addColorStop(0, 'rgba(255,255,255,1)');
+    hg.addColorStop(0.35, 'rgba(255,255,255,.35)');
+    hg.addColorStop(1, 'rgba(255,255,255,0)');
+    hx.fillStyle = hg;
+    hx.fillRect(0, 0, 128, 128);
+    var haloTex = new T.CanvasTexture(hc);
+    function halo(hex, opacity) {
+      return new T.Sprite(new T.SpriteMaterial({ map: haloTex, color: col(hex), transparent: true, opacity: opacity, blending: T.AdditiveBlending, depthWrite: false }));
+    }
+    var ballHalo = halo(C.yarn, 0.55);
+    ballHalo.scale.set(3.4, 3.4, 1);
+    ballHalo.position.z = -1.2;
+    ball.add(ballHalo);
     scene.add(ball);
 
     var tail = new T.Mesh(new T.BufferGeometry(), mats.warp);
@@ -615,7 +637,7 @@
 
     return {
       T: T, canvas: canvas, renderer: renderer, scene: scene, camera: camera,
-      key: key, wall: wall, mats: mats, ball: ball, tail: tail, built: '', loom: null, k: 1
+      key: key, wall: wall, mats: mats, ball: ball, tail: tail, halo: halo, built: '', loom: null, k: 1
     };
   }
 
@@ -789,6 +811,10 @@
     hem.count = 0;
     L.cloth.add(hem);
     L.hem = hem;
+    var clothHalo = gl3.halo(C.cyan || C.yarn, 0.16);
+    clothHalo.scale.set(g.s * k * 1.9, g.clothH * k * 2.1, 1);
+    clothHalo.position.z = -L.amp * 6;
+    L.cloth.add(clothHalo);
     L.hemN = marks.length;
 
     gl3.scene.add(L.fanGroup);

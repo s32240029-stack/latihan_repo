@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Katalog ScriptWeave</title>
 <meta name="description" content="Katalog produk ScriptWeave 2026/2027: asisten coding AI yang paham seluruh codebase kamu.">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:ital,wght@0,400..700;1,400..700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400..700&family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:ital,wght@0,400..700;1,400..700&display=swap">
 <link rel="stylesheet" href="materi.css">
 <style>
   /* catalogue pages: landscape A4 sheets on desktop, free height on phones */
@@ -16,7 +16,8 @@
   /* 1. cover */
   .cover .sheet-in { grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); align-items: stretch; gap: 0 32px; }
   .cover-copy { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
-  .cover h1 { font-size: clamp(3.4rem, 1.4rem + 7.6vw, 8.6rem); line-height: .84; margin-top: auto; }
+  .cover h1 { font-size: clamp(2.8rem, 1rem + 5.4vw, 6.2rem); line-height: .92; margin-top: auto; }
+  .cover h1 span { display: block; background: linear-gradient(90deg, var(--cyan), var(--yarn) 70%); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .cover-sub { max-width: 26rem; font-size: 1.08rem; color: var(--muted); }
   .cover-meta { display: flex; flex-wrap: wrap; gap: 8px 28px; margin-top: auto; font-family: var(--font-mono); font-size: .76rem; color: var(--muted); }
   .cover-meta strong { display: block; color: var(--ink); font-weight: 700; }
@@ -30,15 +31,15 @@
 
   /* 2. brand introduction */
   .intro .sheet-in { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px clamp(28px, 5vw, 72px); align-content: start; }
-  .intro h2 { font-size: clamp(2.3rem, 1.2rem + 3.6vw, 4.4rem); line-height: .92; color: var(--ink); }
+  .intro h2 { font-size: clamp(2rem, 1rem + 2.8vw, 3.6rem); line-height: .98; color: var(--ink); }
   .intro-story { display: grid; gap: 14px; align-content: start; color: var(--muted); }
-  .intro-story em { font-family: var(--font-display); font-size: 1.3em; line-height: 1; color: var(--ink); }
-  .name-eq { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; padding: 18px 0; border-block: 1px solid var(--ink); font-family: var(--font-display); font-size: clamp(1.6rem, 1.1rem + 1.6vw, 2.5rem); line-height: 1; text-transform: uppercase; }
+  .intro-story em { font-style: normal; font-weight: 600; color: var(--cyan); }
+  .name-eq { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; padding: 18px 0; border-block: 1px solid var(--line); font-family: var(--font-display); font-weight: 700; font-size: clamp(1.4rem, 1rem + 1.3vw, 2.1rem); line-height: 1; text-transform: uppercase; }
   .name-eq small { font-family: var(--font-body); font-size: .82rem; text-transform: none; color: var(--muted); }
   .name-eq b { font-weight: 400; color: var(--accent-text); }
   .pillars { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px 32px; align-self: end; }
   .pillars li { display: grid; gap: 8px; padding-top: 16px; border-top: 3px solid var(--thread); }
-  .pillars strong { font-family: var(--font-display); font-size: 1.5rem; font-weight: 400; line-height: 1.05; }
+  .pillars strong { font-family: var(--font-display); font-size: 1.3rem; font-weight: 600; line-height: 1.1; letter-spacing: -.02em; }
   .pillars span { font-size: .9rem; color: var(--muted); }
   .t-gold { --thread: var(--turmeric); }
   .t-red { --thread: var(--madder); }
@@ -50,11 +51,11 @@
   /* 3. product overview */
   .overview .sheet-in { grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 24px clamp(28px, 5vw, 72px); }
   .overview-copy { display: grid; gap: 20px; align-content: start; min-width: 0; }
-  .overview h2 { font-size: clamp(2.3rem, 1.2rem + 3.6vw, 4.4rem); line-height: .92; }
+  .overview h2 { font-size: clamp(2rem, 1rem + 2.8vw, 3.6rem); line-height: .98; }
   .flow { display: grid; gap: 14px; counter-reset: step; }
   .flow li { counter-increment: step; display: grid; grid-template-columns: 2.2rem minmax(0, 1fr); gap: 4px 12px; }
-  .flow li::before { content: counter(step) "."; grid-row: span 2; font-family: var(--font-display); font-size: 1.8rem; line-height: 1; }
-  .flow strong { font-family: var(--font-display); font-size: 1.45rem; font-weight: 400; line-height: 1.1; text-transform: uppercase; }
+  .flow li::before { content: "0" counter(step); grid-row: span 2; font-family: var(--font-mono); font-size: 1rem; font-weight: 700; line-height: 1.6; color: var(--cyan); }
+  .flow strong { font-family: var(--font-display); font-size: 1.3rem; font-weight: 700; line-height: 1.1; letter-spacing: -.02em; text-transform: uppercase; }
   .flow span { font-size: .9rem; color: var(--muted); }
   .overview-art { display: grid; gap: 18px; align-content: center; min-width: 0; }
   .overview-art img { width: 100%; max-width: 360px; justify-self: center; }
@@ -64,32 +65,32 @@
 
   /* 4. product entries */
   .entries-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 32px; }
-  .entries h2 { font-size: clamp(2.3rem, 1.2rem + 3.6vw, 4.4rem); line-height: .92; }
+  .entries h2 { font-size: clamp(2rem, 1rem + 2.8vw, 3.6rem); line-height: .98; }
   .entry-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
   .entry { display: grid; grid-template-rows: auto auto 1fr auto auto; gap: 8px; padding: 18px; border: 1px solid var(--line); border-radius: 10px; background: var(--paper-2); min-width: 0; }
   .entry-no { font-family: var(--font-mono); font-size: .72rem; color: var(--muted); font-variant-numeric: tabular-nums; }
-  .entry h3 { font-size: 1.55rem; line-height: 1; }
+  .entry h3 { font-size: 1.3rem; line-height: 1.05; }
   .entry p { font-size: .86rem; line-height: 1.5; }
   .entry .desc { color: var(--muted); }
   .entry .gain { padding-top: 8px; border-top: 1px dashed var(--line); }
   .entry .gain b { display: block; font-family: var(--font-mono); font-size: .66rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ok); }
   .entry .where { font-family: var(--font-mono); font-size: .68rem; letter-spacing: .02em; color: var(--accent-text); }
-  .entry.hero { grid-column: span 2; background: var(--ink); color: var(--paper); border-color: var(--ink); }
-  .entry.hero .desc, .entry.hero .entry-no { color: color-mix(in srgb, var(--paper) 72%, var(--ink)); }
-  .entry.hero .gain { border-top-color: color-mix(in srgb, var(--paper) 30%, var(--ink)); }
-  .entry.hero .gain b { color: #7fe0bd; }
+  .entry.hero { grid-column: span 2; background: var(--deep); border-color: var(--cyan); box-shadow: 0 0 0 1px rgba(61, 224, 255, .25), 0 0 42px -12px rgba(61, 224, 255, .5); }
+  .entry.hero .entry-no { color: var(--cyan); }
+  .entry.hero .gain { border-top-color: var(--line); }
+  .entry.hero .gain b { color: var(--ok); }
   .entry.hero .where { color: var(--turmeric); }
   @media (max-width: 1000px) { .entry-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (max-width: 560px) { .entry-grid { grid-template-columns: minmax(0, 1fr); } .entry.hero { grid-column: auto; } }
 
   /* 5. packages */
-  .packages h2 { font-size: clamp(2.3rem, 1.2rem + 3.6vw, 4.4rem); line-height: .92; }
+  .packages h2 { font-size: clamp(2rem, 1rem + 2.8vw, 3.6rem); line-height: .98; }
   .pkg-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; align-items: start; }
   .pkg { display: grid; gap: 10px; padding: 20px; border: 1px solid var(--line); border-radius: 10px; min-width: 0; }
-  .pkg.featured { border: 1.5px solid var(--ink); background: var(--paper-2); }
-  .pkg h3 { font-size: 2rem; line-height: 1; }
+  .pkg.featured { border: 1.5px solid var(--cyan); background: var(--paper-2); box-shadow: 0 0 42px -12px rgba(61, 224, 255, .5); }
+  .pkg h3 { font-size: 1.6rem; line-height: 1; }
   .pkg .for { font-size: .84rem; color: var(--muted); }
-  .price { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px; font-family: var(--font-display); font-variant-numeric: lining-nums tabular-nums; }
+  .price { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px; font-family: var(--font-display); font-weight: 700; letter-spacing: -.03em; font-variant-numeric: lining-nums tabular-nums; }
   .price .cur { font-size: 1.2rem; color: var(--muted); }
   .price .amt { font-size: clamp(2.2rem, 1.6rem + 1.6vw, 3rem); line-height: .95; }
   .price .per { font-family: var(--font-body); font-size: .8rem; color: var(--muted); margin-left: 4px; }
@@ -104,16 +105,16 @@
   /* 6. CTA */
   .cta .sheet-in { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px clamp(28px, 5vw, 72px); }
   .cta-copy { display: grid; gap: 22px; align-content: start; min-width: 0; }
-  .cta h2 { font-size: clamp(2.8rem, 1.4rem + 4.6vw, 5.6rem); line-height: .88; }
+  .cta h2 { font-size: clamp(2.4rem, 1.2rem + 3.6vw, 4.6rem); line-height: .94; }
   .start { display: grid; gap: 10px; counter-reset: s; }
   .start li { counter-increment: s; display: flex; gap: 12px; align-items: baseline; font-size: .95rem; }
-  .start li::before { content: counter(s) "."; font-family: var(--font-display); font-size: 1.5rem; line-height: 1; min-width: 1.6rem; }
+  .start li::before { content: "0" counter(s); font-family: var(--font-mono); font-size: .9rem; font-weight: 700; color: var(--cyan); min-width: 1.8rem; }
   .coupon { display: grid; gap: 4px; padding: 16px 18px; border: 2px dashed var(--turmeric); border-radius: 10px; background: color-mix(in srgb, var(--turmeric) 10%, var(--paper)); }
-  .coupon code { font-size: 1.5rem; font-weight: 700; letter-spacing: .12em; }
+  .coupon code { font-size: 1.5rem; font-weight: 700; letter-spacing: .12em; color: var(--turmeric); }
   .coupon span { font-size: .84rem; color: var(--muted); }
   .cta-side { display: grid; gap: 18px; align-content: start; min-width: 0; }
   .cta-side img { width: 100%; max-width: 400px; justify-self: center; }
-  .contact { display: grid; border-top: 1px solid var(--ink); }
+  .contact { display: grid; border-top: 1px solid var(--line); }
   .contact div { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: .9rem; }
   .contact dt { font-family: var(--font-mono); font-size: .7rem; color: var(--muted); padding-top: 3px; }
   .contact dd { overflow-wrap: anywhere; }
@@ -150,7 +151,7 @@
           <span>Script<i>/</i>Weave</span>
         </a>
         <p class="eyebrow">// katalog produk</p>
-        <h1>Tenun ide jadi kode.</h1>
+        <h1>Tenun ide <span>jadi kode.</span></h1>
         <p class="cover-sub">Asisten coding AI yang membaca seluruh codebase kamu, lalu membantu menulis, me-review, dan memperbaiki kode sampai siap rilis.</p>
         <div class="cover-meta">
           <p><strong>Edisi</strong>2026/2027</p>
@@ -159,7 +160,7 @@
         </div>
       </div>
       <figure class="cover-art">
-        <img src="assets/ball.webp" alt="Gulungan benang indigo dengan pita benang kuning, seutas benang menjuntai ke bawah" width="835" height="1498">
+        <img src="assets/ball.webp" alt="Gulungan benang indigo dengan pita benang kuning, seutas benang menjuntai ke bawah" width="1014" height="1696">
       </figure>
     </div>
     <div class="seam" aria-hidden="true"></div>
@@ -201,7 +202,7 @@
         </ol>
       </div>
       <div class="overview-art">
-        <img src="assets/weaving.webp" alt="Benang indigo terurai menjadi lungsin dan ditenun baris demi baris dengan benang berwarna seperti baris kode" width="1000" height="1340">
+        <img src="assets/weaving.webp" alt="Benang indigo terurai menjadi lungsin dan ditenun baris demi baris dengan benang berwarna seperti baris kode" width="1000" height="1262">
         <div class="runs">
           <p>Jalan di</p>
           <ul class="chips"><li>VS Code</li><li>JetBrains IDE</li><li>Neovim</li><li>Terminal</li></ul>
@@ -371,7 +372,7 @@
         <p><a class="btn" href="index.html#kontak">Mulai gratis di scriptweave.id</a></p>
       </div>
       <div class="cta-side">
-        <img src="assets/cloth.webp" alt="Kain tenun berisi baris kode berwarna dengan jahitan pinggir kuning" width="1100" height="1097">
+        <img src="assets/cloth.webp" alt="Kain tenun berisi baris kode berwarna dengan jahitan pinggir kuning" width="1100" height="1029">
         <p><span class="tag line">Mahasiswa</span> Diskon 50% paket Pro, jadi Rp75.000/bulan dengan email kampus .ac.id.</p>
         <dl class="contact">
           <div><dt>Email</dt><dd>halo@scriptweave.id</dd></div>
